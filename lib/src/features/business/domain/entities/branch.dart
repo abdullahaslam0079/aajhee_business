@@ -3,10 +3,14 @@ import 'package:equatable/equatable.dart';
 class Branch extends Equatable {
   const Branch({
     required this.id,
-    required this.businessId,
     required this.name,
-    this.address,
-    this.city,
+    required this.street,
+    required this.houseNumber,
+    required this.postalCode,
+    required this.city,
+    required this.latitude,
+    required this.longitude,
+    this.businessId = '',
     this.isActive = true,
     this.scanCount = 0,
     this.uniqueUsers = 0,
@@ -15,18 +19,31 @@ class Branch extends Equatable {
   final String id;
   final String businessId;
   final String name;
-  final String? address;
-  final String? city;
+  final String street;
+  final String houseNumber;
+  final String postalCode;
+  final String city;
+  final double latitude;
+  final double longitude;
   final bool isActive;
   final int scanCount;
   final int uniqueUsers;
+
+  String get formattedAddress => '$street $houseNumber, $postalCode $city';
+
+  /// Legacy alias used by list screens.
+  String? get address => '$street $houseNumber';
 
   Branch copyWith({
     String? id,
     String? businessId,
     String? name,
-    String? address,
+    String? street,
+    String? houseNumber,
+    String? postalCode,
     String? city,
+    double? latitude,
+    double? longitude,
     bool? isActive,
     int? scanCount,
     int? uniqueUsers,
@@ -35,8 +52,12 @@ class Branch extends Equatable {
       id: id ?? this.id,
       businessId: businessId ?? this.businessId,
       name: name ?? this.name,
-      address: address ?? this.address,
+      street: street ?? this.street,
+      houseNumber: houseNumber ?? this.houseNumber,
+      postalCode: postalCode ?? this.postalCode,
       city: city ?? this.city,
+      latitude: latitude ?? this.latitude,
+      longitude: longitude ?? this.longitude,
       isActive: isActive ?? this.isActive,
       scanCount: scanCount ?? this.scanCount,
       uniqueUsers: uniqueUsers ?? this.uniqueUsers,
@@ -44,6 +65,18 @@ class Branch extends Equatable {
   }
 
   @override
-  List<Object?> get props =>
-      [id, businessId, name, address, city, isActive, scanCount, uniqueUsers];
+  List<Object?> get props => [
+        id,
+        businessId,
+        name,
+        street,
+        houseNumber,
+        postalCode,
+        city,
+        latitude,
+        longitude,
+        isActive,
+        scanCount,
+        uniqueUsers,
+      ];
 }

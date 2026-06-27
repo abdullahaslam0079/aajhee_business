@@ -116,12 +116,6 @@ class DashboardScreen extends ConsumerWidget {
                         onTap: () => context.push(AppRoutes.branches),
                       ),
                       _DashboardCard(
-                        icon: Icons.inventory_2_outlined,
-                        label: 'dashboard.items'.tr(),
-                        subtitle: 'dashboard.items_subtitle'.tr(),
-                        onTap: () => context.push(AppRoutes.items),
-                      ),
-                      _DashboardCard(
                         icon: Icons.local_offer_outlined,
                         label: 'dashboard.offers'.tr(),
                         subtitle: 'dashboard.offers_subtitle'.tr(),

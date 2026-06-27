@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:goluto_business/src/services/auth_interceptor.dart';
 import 'package:goluto_business/src/utils/utils.dart';
 
 class AppConfig {
@@ -21,6 +22,7 @@ class AppConfig {
       ),
     );
 
+    dio.interceptors.add(AuthInterceptor());
     dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) {
@@ -41,6 +43,9 @@ class AppConfig {
   }
 
   static String _getBaseUrl() {
-    return dotenv.get('API_BASE_URL', fallback: 'http://example.com');
+    return dotenv.get(
+      'API_BASE_URL',
+      fallback: 'https://goluto-backend.onrender.com/api',
+    );
   }
 }

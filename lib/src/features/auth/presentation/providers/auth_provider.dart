@@ -21,12 +21,15 @@ class AuthController extends _$AuthController {
     required BuildContext context,
     required String email,
     required String password,
+    bool rememberMe = true,
   }) async {
     state = true;
 
-    final result = await ref
-        .read(authRepositoryProvider)
-        .login(email: email, password: password);
+    final result = await ref.read(authRepositoryProvider).login(
+          email: email,
+          password: password,
+          rememberMe: rememberMe,
+        );
 
     state = false;
     result.fold(
@@ -45,6 +48,8 @@ class AuthController extends _$AuthController {
     required String name,
     required String email,
     required String password,
+    required String passwordConfirm,
+    required int categoryId,
   }) async {
     state = true;
 
@@ -52,6 +57,8 @@ class AuthController extends _$AuthController {
           name: name,
           email: email,
           password: password,
+          passwordConfirm: passwordConfirm,
+          categoryId: categoryId,
         );
 
     state = false;

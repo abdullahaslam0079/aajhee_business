@@ -14,8 +14,4 @@ abstract final class AppRoutes {
   static const String offerCreate = '/offers/create';
   static String offerEdit(String id) => '/offers/$id/edit';
   static String offerDetail(String id) => '/offers/$id';
-
-  static const String items = '/items';
-  static const String itemCreate = '/items/create';
-  static String itemEdit(String id) => '/items/$id/edit';
 }

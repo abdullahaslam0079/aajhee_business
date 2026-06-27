@@ -1,16 +1,17 @@
+import 'package:goluto_business/src/features/auth/presentation/providers/auth_provider.dart';
 import 'package:goluto_business/src/features/auth/presentation/widgets/auth_page_layout.dart';
 import 'package:goluto_business/src/imports/core_imports.dart';
 import 'package:goluto_business/src/imports/packages_imports.dart';
-import 'package:goluto_business/src/routing/app_navigation.dart';
 
-class BusinessLoginScreen extends StatefulWidget {
+class BusinessLoginScreen extends ConsumerStatefulWidget {
   const BusinessLoginScreen({super.key});
 
   @override
-  State<BusinessLoginScreen> createState() => _BusinessLoginScreenState();
+  ConsumerState<BusinessLoginScreen> createState() =>
+      _BusinessLoginScreenState();
 }
 
-class _BusinessLoginScreenState extends State<BusinessLoginScreen> {
+class _BusinessLoginScreenState extends ConsumerState<BusinessLoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -25,21 +26,21 @@ class _BusinessLoginScreenState extends State<BusinessLoginScreen> {
   }
 
   Future<void> _handleLogin() async {
-    // if (!(_formKey.currentState?.validate() ?? false)) {
-    //   return;
-    // }
+    if (!(_formKey.currentState?.validate() ?? false)) {
+      return;
+    }
 
-    // ref.read(authControllerProvider.notifier).login(
-    //       context: context,
-    //       email: _emailController.text.trim(),
-    //       password: _passwordController.text,
-    //     );
-    navigateAfterAuthentication(context);
+    ref.read(authControllerProvider.notifier).login(
+          context: context,
+          email: _emailController.text.trim(),
+          password: _passwordController.text,
+          rememberMe: _rememberMe,
+        );
   }
 
   @override
   Widget build(BuildContext context) {
-    const isLoading = false;
+    final isLoading = ref.watch(authControllerProvider);
     final cs = context.theme.colorScheme;
     final tt = context.theme.textTheme;
 
@@ -57,15 +58,15 @@ class _BusinessLoginScreenState extends State<BusinessLoginScreen> {
               label: 'auth.email'.tr(),
               keyboardType: TextInputType.emailAddress,
               prefixIcon: const Icon(Icons.email_outlined),
-              // validator: (v) {
-              //   if (AppUtils.isBlank(v)) {
-              //     return 'auth.email_required'.tr();
-              //   }
-              //   if (!AppUtils.isValidEmail(v!)) {
-              //     return 'auth.email_invalid'.tr();
-              //   }
-              //   return null;
-              // },
+              validator: (v) {
+                if (AppUtils.isBlank(v)) {
+                  return 'auth.email_required'.tr();
+                }
+                if (!AppUtils.isValidEmail(v!)) {
+                  return 'auth.email_invalid'.tr();
+                }
+                return null;
+              },
             ),
             SizedBox(height: AppSpacing.md.h),
             AppTextField(
@@ -82,15 +83,15 @@ class _BusinessLoginScreenState extends State<BusinessLoginScreen> {
                   setState(() => _obscurePassword = !_obscurePassword);
                 },
               ),
-              // validator: (v) {
-              //   if (AppUtils.isBlank(v)) {
-              //     return 'auth.password_required'.tr();
-              //   }
-              //   if (v!.length < 6) {
-              //     return 'auth.password_too_short'.tr();
-              //   }
-              //   return null;
-              // },
+              validator: (v) {
+                if (AppUtils.isBlank(v)) {
+                  return 'auth.password_required'.tr();
+                }
+                if (v!.length < 6) {
+                  return 'auth.password_too_short'.tr();
+                }
+                return null;
+              },
             ),
             SizedBox(height: AppSpacing.sm.h),
             Row(

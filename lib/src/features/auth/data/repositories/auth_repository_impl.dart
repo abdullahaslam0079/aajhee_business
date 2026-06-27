@@ -11,64 +11,57 @@ class AuthRepositoryImpl implements AuthRepository {
   Stream<AppUser?> get onAuthStateChanged {
     return _authService.authStateChanges.map((userData) {
       if (userData == null) return null;
-      return AppUser(
-        id: userData['id'] ?? '',
-        email: userData['email'] ?? '',
-        name: userData['name'],
-        photoUrl: userData['photoUrl'],
-      );
+      return _mapUser(userData);
     });
   }
 
   @override
   FutureEither<AppUser> login({
-    required String email, 
+    required String email,
     required String password,
+    bool rememberMe = true,
   }) async {
-    final result = await _authService.login(email: email, password: password);
-    
+    final result = await _authService.login(
+      email: email,
+      password: password,
+      rememberMe: rememberMe,
+    );
+
     return result.flatMap((userData) {
       if (userData == null) {
         return left(const ServerFailure('Login failed: User record not found'));
       }
-
-      final data = userData['user'] ?? userData;
-      final user = AppUser(
-        id: data['id'].toString(), 
-        email: data['email'] ?? email, 
-        name: data['name'],
-      );
-      
-      return right(user);
+      return right(_mapUser(userData));
     });
   }
 
   @override
   FutureEither<AppUser> signUp({
-    required String name, 
-    required String email, 
+    required String name,
+    required String email,
     required String password,
+    required String passwordConfirm,
+    required int categoryId,
   }) async {
     final result = await _authService.signUp(
       name: name,
       email: email,
       password: password,
+      passwordConfirm: passwordConfirm,
+      categoryId: categoryId,
     );
 
     return result.flatMap((userData) {
       if (userData == null) {
         return left(const ServerFailure('Sign up failed: User record corrupted'));
       }
-
-      final data = userData['user'] ?? userData;
-      final user = AppUser(
-        id: data['id'].toString(), 
-        email: data['email'] ?? email, 
-        name: name,
-      );
-      
-      return right(user);
+      return right(_mapUser(userData));
     });
+  }
+
+  @override
+  FutureEither<List<Map<String, dynamic>>> getCategories() {
+    return _authService.getCategories();
   }
 
   @override
@@ -84,16 +77,19 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   FutureEither<AppUser?> checkAuthState() async {
     final result = await _authService.getCurrentUser();
-    
+
     return result.map((userData) {
       if (userData == null) return null;
-
-      return AppUser(
-        id: userData['id'], 
-        email: userData['email'] ?? '', 
-        name: userData['name'],
-        photoUrl: userData['photoUrl'],
-      );
+      return _mapUser(userData);
     });
+  }
+
+  AppUser _mapUser(Map<String, dynamic> data) {
+    return AppUser(
+      id: data['id'].toString(),
+      email: data['email'] ?? '',
+      name: data['name'],
+      photoUrl: data['photoUrl'],
+    );
   }
 }

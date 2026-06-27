@@ -1,24 +1,27 @@
 import 'package:goluto_business/src/imports/core_imports.dart';
+import 'package:goluto_business/src/imports/packages_imports.dart';
 
-class App extends StatelessWidget {
+class App extends ConsumerWidget {
   const App({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final router = ref.watch(appRouterProvider);
+
     return ScreenUtilWrapper(
       designSize: kIsWeb ? const Size(1440, 900) : const Size(360, 690),
-      child: _buildMaterialApp(context),
+      child: _buildMaterialApp(context, router),
     );
   }
 
-  Widget _buildMaterialApp(BuildContext context) {
+  Widget _buildMaterialApp(BuildContext context, GoRouter router) {
     return MaterialApp.router(
       title: 'GoLuto Business',
       debugShowCheckedModeBanner: false,
       theme: buildLightTheme(primaryColorHex: '#1F1F21'),
       darkTheme: buildDarkTheme(primaryColorHex: '#CFCFD4'),
       themeMode: ThemeMode.light,
-      routerConfig: appRouter,
+      routerConfig: router,
       localizationsDelegates: context.localizationDelegates,
       supportedLocales: context.supportedLocales,
       locale: context.locale,

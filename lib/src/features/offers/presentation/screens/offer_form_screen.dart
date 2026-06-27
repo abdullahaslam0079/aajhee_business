@@ -1,12 +1,9 @@
 import 'package:goluto_business/src/features/business/domain/entities/branch.dart';
-import 'package:goluto_business/src/features/business/domain/entities/business_item.dart';
 import 'package:goluto_business/src/features/business/domain/entities/offer.dart';
 import 'package:goluto_business/src/features/business/domain/enums/offer_branch_scope.dart';
-import 'package:goluto_business/src/features/business/domain/enums/offer_status.dart';
 import 'package:goluto_business/src/features/business/domain/enums/offer_type.dart';
 import 'package:goluto_business/src/features/business/domain/enums/usage_limit_type.dart';
 import 'package:goluto_business/src/features/business/presentation/providers/business_providers.dart';
-import 'package:goluto_business/src/features/offers/presentation/widgets/offer_item_selector.dart';
 import 'package:goluto_business/src/imports/core_imports.dart';
 import 'package:goluto_business/src/imports/packages_imports.dart';
 
@@ -26,20 +23,21 @@ class _OfferFormScreenState extends ConsumerState<OfferFormScreen> {
   final _titleController = TextEditingController();
   final _descriptionController = TextEditingController();
   final _discountController = TextEditingController(text: '10');
-  final _customUsageController = TextEditingController(text: '3');
+  final _itemNameController = TextEditingController();
+  final _originalPriceController = TextEditingController();
+  final _discountedPriceController = TextEditingController();
+  final _usageCountController = TextEditingController(text: '3');
 
   Offer? _existingOffer;
   List<Branch> _branches = [];
-  List<BusinessItem> _items = [];
   bool _isLoading = true;
   bool _isSaving = false;
 
-  OfferType _type = OfferType.billDiscount;
+  OfferType _type = OfferType.percentageBill;
   OfferBranchScope _branchScope = OfferBranchScope.selectedBranches;
   UsageLimitType _usageLimit = UsageLimitType.oneTime;
-  OfferStatus _status = OfferStatus.active;
+  bool _isEnabled = true;
   final Set<String> _selectedBranchIds = {};
-  Map<String, double> _itemDiscounts = {};
 
   @override
   void initState() {
@@ -50,9 +48,7 @@ class _OfferFormScreenState extends ConsumerState<OfferFormScreen> {
   Future<void> _loadData() async {
     final repo = ref.read(businessRepositoryProvider);
     final branchesResult = await repo.getBranches();
-    final itemsResult = await repo.getItems();
     _branches = branchesResult.getOrElse((_) => []);
-    _items = itemsResult.getOrElse((_) => []);
 
     if (widget.isEditing) {
       final offerResult = await repo.getOffer(widget.offerId!);
@@ -63,17 +59,24 @@ class _OfferFormScreenState extends ConsumerState<OfferFormScreen> {
           _titleController.text = offer.title;
           _descriptionController.text = offer.description ?? '';
           _discountController.text = offer.discountPercent.toStringAsFixed(0);
-          _customUsageController.text = '${offer.customUsageCount ?? 3}';
+          _itemNameController.text = offer.itemName ?? '';
+          _originalPriceController.text =
+              offer.originalPrice?.toStringAsFixed(2) ?? '';
+          _discountedPriceController.text =
+              offer.discountedPrice?.toStringAsFixed(2) ?? '';
+          _usageCountController.text = '${offer.usageLimitCount}';
           _type = offer.type;
           _branchScope = offer.branchScope;
           _usageLimit = offer.usageLimitType;
-          _status = offer.status;
-          _itemDiscounts = Map<String, double>.from(offer.itemDiscounts);
+          _isEnabled = offer.isEnabled;
           _selectedBranchIds
             ..clear()
             ..addAll(offer.branchIds);
         },
       );
+    } else if (_branches.isNotEmpty) {
+      _selectedBranchIds.addAll(_branches.map((branch) => branch.id));
+      _branchScope = OfferBranchScope.allBranches;
     }
 
     if (mounted) setState(() => _isLoading = false);
@@ -84,54 +87,51 @@ class _OfferFormScreenState extends ConsumerState<OfferFormScreen> {
     _titleController.dispose();
     _descriptionController.dispose();
     _discountController.dispose();
-    _customUsageController.dispose();
+    _itemNameController.dispose();
+    _originalPriceController.dispose();
+    _discountedPriceController.dispose();
+    _usageCountController.dispose();
     super.dispose();
   }
 
   Offer _buildOfferDraft() {
     final billDiscount = double.tryParse(_discountController.text.trim()) ?? 0;
-    final customCount = int.tryParse(_customUsageController.text.trim());
+    final usageCount = int.tryParse(_usageCountController.text.trim()) ?? 1;
 
     return Offer(
       id: _existingOffer?.id ?? '',
-      businessId: _existingOffer?.businessId ?? 'biz_demo_001',
+      businessId: _existingOffer?.businessId ?? '',
       title: _titleController.text.trim(),
       description: _descriptionController.text.trim().isEmpty
           ? null
           : _descriptionController.text.trim(),
       type: _type,
-      status: _status,
       branchScope: _branchScope,
       branchIds: _branchScope == OfferBranchScope.selectedBranches
           ? _selectedBranchIds.toList()
           : const [],
-      itemDiscounts: _type == OfferType.productDiscount
-          ? Map<String, double>.from(_itemDiscounts)
-          : const {},
       discountPercent:
-          _type == OfferType.billDiscount ? billDiscount : 0,
+          _type == OfferType.percentageBill ? billDiscount : 0,
       usageLimitType: _usageLimit,
-      customUsageCount:
-          _usageLimit == UsageLimitType.custom ? customCount : null,
-      customUsagePeriod: 'month',
-      qrToken: _existingOffer?.qrToken ?? '',
+      usageLimitCount: _usageLimit.requiresCount ? usageCount : 1,
+      itemName: _type == OfferType.item
+          ? _itemNameController.text.trim()
+          : null,
+      originalPrice: _type == OfferType.item
+          ? double.tryParse(_originalPriceController.text.trim())
+          : null,
+      discountedPrice: _type == OfferType.item
+          ? double.tryParse(_discountedPriceController.text.trim())
+          : null,
+      isEnabled: _isEnabled,
+      qrCode: _existingOffer?.qrCode ?? '',
       createdAt: _existingOffer?.createdAt ?? DateTime.now(),
-      scanCount: _existingOffer?.scanCount ?? 0,
-      redemptionCount: _existingOffer?.redemptionCount ?? 0,
+      branchStats: _existingOffer?.branchStats ?? const [],
     );
   }
 
   Future<void> _save() async {
     if (!_formKey.currentState!.validate()) return;
-
-    if (_type == OfferType.productDiscount && _itemDiscounts.isEmpty) {
-      showToast(
-        context,
-        message: 'offers.items_required'.tr(),
-        status: 'error',
-      );
-      return;
-    }
 
     if (_branchScope == OfferBranchScope.selectedBranches &&
         _selectedBranchIds.isEmpty) {
@@ -159,15 +159,6 @@ class _OfferFormScreenState extends ConsumerState<OfferFormScreen> {
     } else {
       showToast(context, message: 'offers.save_error'.tr(), status: 'error');
     }
-  }
-
-  Future<void> _openAddItem() async {
-    await context.push(AppRoutes.itemCreate);
-    if (!mounted) return;
-    final itemsResult = await ref.read(businessRepositoryProvider).getItems();
-    setState(() {
-      _items = itemsResult.getOrElse((_) => []);
-    });
   }
 
   @override
@@ -222,23 +213,52 @@ class _OfferFormScreenState extends ConsumerState<OfferFormScreen> {
                 onSelectionChanged: (v) => setState(() => _type = v.first),
               ),
               SizedBox(height: AppSpacing.lg.h),
-              if (_type == OfferType.productDiscount) ...[
-                Text('offers.field_items'.tr(), style: tt.titleSmall),
-                SizedBox(height: AppSpacing.xs.h),
-                Text(
-                  'offers.field_items_hint'.tr(),
-                  style: tt.bodySmall?.copyWith(color: cs.onSurfaceVariant),
+              if (_type == OfferType.item) ...[
+                AppTextField(
+                  label: 'offers.field_item_name'.tr(),
+                  controller: _itemNameController,
+                  validator: (v) => v == null || v.trim().isEmpty
+                      ? 'offers.item_name_required'.tr()
+                      : null,
                 ),
-                SizedBox(height: AppSpacing.md.h),
-                OfferItemSelector(
-                  items: _items,
-                  itemDiscounts: _itemDiscounts,
-                  onChanged: (value) => setState(() => _itemDiscounts = value),
-                  onAddItem: _openAddItem,
+                SizedBox(height: AppSpacing.lg.h),
+                AppTextField(
+                  label: 'offers.field_original_price'.tr(),
+                  controller: _originalPriceController,
+                  keyboardType: const TextInputType.numberWithOptions(
+                    decimal: true,
+                  ),
+                  validator: (v) {
+                    final value = double.tryParse(v ?? '');
+                    if (value == null || value <= 0) {
+                      return 'offers.price_invalid'.tr();
+                    }
+                    return null;
+                  },
+                ),
+                SizedBox(height: AppSpacing.lg.h),
+                AppTextField(
+                  label: 'offers.field_discounted_price'.tr(),
+                  controller: _discountedPriceController,
+                  keyboardType: const TextInputType.numberWithOptions(
+                    decimal: true,
+                  ),
+                  validator: (v) {
+                    final discounted = double.tryParse(v ?? '');
+                    final original =
+                        double.tryParse(_originalPriceController.text.trim());
+                    if (discounted == null || discounted < 0) {
+                      return 'offers.price_invalid'.tr();
+                    }
+                    if (original != null && discounted >= original) {
+                      return 'offers.discounted_price_invalid'.tr();
+                    }
+                    return null;
+                  },
                 ),
                 SizedBox(height: AppSpacing.lg.h),
               ],
-              if (_type == OfferType.billDiscount) ...[
+              if (_type == OfferType.percentageBill) ...[
                 AppTextField(
                   label: 'offers.field_discount'.tr(),
                   controller: _discountController,
@@ -315,13 +335,13 @@ class _OfferFormScreenState extends ConsumerState<OfferFormScreen> {
                   onChanged: (v) => setState(() => _usageLimit = v!),
                 );
               }),
-              if (_usageLimit == UsageLimitType.custom) ...[
+              if (_usageLimit.requiresCount) ...[
                 AppTextField(
-                  label: 'offers.field_custom_usage'.tr(),
-                  controller: _customUsageController,
+                  label: 'offers.field_usage_count'.tr(),
+                  controller: _usageCountController,
                   keyboardType: TextInputType.number,
                   validator: (v) {
-                    if (_usageLimit != UsageLimitType.custom) return null;
+                    if (!_usageLimit.requiresCount) return null;
                     final count = int.tryParse(v ?? '');
                     if (count == null || count < 1) {
                       return 'offers.custom_usage_invalid'.tr();
@@ -332,22 +352,15 @@ class _OfferFormScreenState extends ConsumerState<OfferFormScreen> {
                 SizedBox(height: AppSpacing.md.h),
               ],
               if (widget.isEditing) ...[
-                Text('offers.field_status'.tr(), style: tt.titleSmall),
-                SizedBox(height: AppSpacing.sm.h),
-                DropdownButtonFormField<OfferStatus>(
-                  initialValue: _status,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(borderRadius: AppBorders.sm),
+                SwitchListTile(
+                  contentPadding: EdgeInsets.zero,
+                  title: Text('offers.field_enabled'.tr()),
+                  subtitle: Text(
+                    'offers.field_enabled_hint'.tr(),
+                    style: tt.bodySmall?.copyWith(color: cs.onSurfaceVariant),
                   ),
-                  items: OfferStatus.values
-                      .map(
-                        (s) => DropdownMenuItem(
-                          value: s,
-                          child: Text(s.labelKey.tr()),
-                        ),
-                      )
-                      .toList(),
-                  onChanged: (v) => setState(() => _status = v!),
+                  value: _isEnabled,
+                  onChanged: (value) => setState(() => _isEnabled = value),
                 ),
                 SizedBox(height: AppSpacing.lg.h),
               ],

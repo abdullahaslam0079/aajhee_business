@@ -51,7 +51,7 @@ final class BusinessRepositoryProvider extends $FunctionalProvider<
 }
 
 String _$businessRepositoryHash() =>
-    r'f9e1c33b33d2cbe483193007c8f51e0f08188eb3';
+    r'19f542e783de07224bba9881306641e790759b60';
 
 @ProviderFor(BranchesList)
 final branchesListProvider = BranchesListProvider._();
@@ -77,7 +77,7 @@ final class BranchesListProvider
   BranchesList create() => BranchesList();
 }
 
-String _$branchesListHash() => r'982ff830b6980739a9e00f733bc1b6c86e362662';
+String _$branchesListHash() => r'a24fef8d5aeffa52900a3c4c03277476bf57d7ab';
 
 abstract class _$BranchesList extends $AsyncNotifier<List<Branch>> {
   FutureOr<List<Branch>> build();
@@ -88,48 +88,6 @@ abstract class _$BranchesList extends $AsyncNotifier<List<Branch>> {
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<AsyncValue<List<Branch>>, List<Branch>>,
         AsyncValue<List<Branch>>,
-        Object?,
-        Object?>;
-    return element.handleCreate(ref, build);
-  }
-}
-
-@ProviderFor(ItemsList)
-final itemsListProvider = ItemsListProvider._();
-
-final class ItemsListProvider
-    extends $AsyncNotifierProvider<ItemsList, List<BusinessItem>> {
-  ItemsListProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'itemsListProvider',
-          isAutoDispose: false,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
-
-  @override
-  String debugGetCreateSourceHash() => _$itemsListHash();
-
-  @$internal
-  @override
-  ItemsList create() => ItemsList();
-}
-
-String _$itemsListHash() => r'82ce6bdd7757f06d3fbbf970e494449121b5dc48';
-
-abstract class _$ItemsList extends $AsyncNotifier<List<BusinessItem>> {
-  FutureOr<List<BusinessItem>> build();
-  @$mustCallSuper
-  @override
-  WhenComplete runBuild() {
-    final ref =
-        this.ref as $Ref<AsyncValue<List<BusinessItem>>, List<BusinessItem>>;
-    final element = ref.element as $ClassProviderElement<
-        AnyNotifier<AsyncValue<List<BusinessItem>>, List<BusinessItem>>,
-        AsyncValue<List<BusinessItem>>,
         Object?,
         Object?>;
     return element.handleCreate(ref, build);

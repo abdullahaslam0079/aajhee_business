@@ -1,16 +1,17 @@
+import 'package:goluto_business/src/features/auth/presentation/providers/auth_provider.dart';
 import 'package:goluto_business/src/features/auth/presentation/widgets/auth_page_layout.dart';
 import 'package:goluto_business/src/imports/core_imports.dart';
 import 'package:goluto_business/src/imports/packages_imports.dart';
-import 'package:goluto_business/src/routing/app_navigation.dart';
 
-class BusinessRegisterScreen extends StatefulWidget {
+class BusinessRegisterScreen extends ConsumerStatefulWidget {
   const BusinessRegisterScreen({super.key});
 
   @override
-  State<BusinessRegisterScreen> createState() => _BusinessRegisterScreenState();
+  ConsumerState<BusinessRegisterScreen> createState() =>
+      _BusinessRegisterScreenState();
 }
 
-class _BusinessRegisterScreenState extends State<BusinessRegisterScreen> {
+class _BusinessRegisterScreenState extends ConsumerState<BusinessRegisterScreen> {
   final _formKey = GlobalKey<FormState>();
   final _businessNameController = TextEditingController();
   final _emailController = TextEditingController();
@@ -18,6 +19,26 @@ class _BusinessRegisterScreenState extends State<BusinessRegisterScreen> {
   final _confirmPasswordController = TextEditingController();
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
+  bool _isLoadingCategories = true;
+  List<Map<String, dynamic>> _categories = [];
+  int? _selectedCategoryId;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadCategories();
+  }
+
+  Future<void> _loadCategories() async {
+    final result = await ref.read(authRepositoryProvider).getCategories();
+    if (!mounted) return;
+    setState(() {
+      _categories = result.getOrElse((_) => []);
+      _selectedCategoryId =
+          _categories.isNotEmpty ? _categories.first['id'] as int? : null;
+      _isLoadingCategories = false;
+    });
+  }
 
   @override
   void dispose() {
@@ -29,22 +50,32 @@ class _BusinessRegisterScreenState extends State<BusinessRegisterScreen> {
   }
 
   Future<void> _handleRegister() async {
-    // if (!(_formKey.currentState?.validate() ?? false)) {
-    //   return;
-    // }
+    if (!(_formKey.currentState?.validate() ?? false)) {
+      return;
+    }
 
-    // ref.read(authControllerProvider.notifier).signUp(
-    //       context: context,
-    //       name: _businessNameController.text.trim(),
-    //       email: _emailController.text.trim(),
-    //       password: _passwordController.text,
-    //     );
-    navigateAfterAuthentication(context);
+    if (_selectedCategoryId == null) {
+      showToast(
+        context,
+        message: 'auth.category_required'.tr(),
+        status: 'error',
+      );
+      return;
+    }
+
+    ref.read(authControllerProvider.notifier).signUp(
+          context: context,
+          name: _businessNameController.text.trim(),
+          email: _emailController.text.trim(),
+          password: _passwordController.text,
+          passwordConfirm: _confirmPasswordController.text,
+          categoryId: _selectedCategoryId!,
+        );
   }
 
   @override
   Widget build(BuildContext context) {
-    const isLoading = false;
+    final isLoading = ref.watch(authControllerProvider) || _isLoadingCategories;
     final cs = context.theme.colorScheme;
     final tt = context.theme.textTheme;
 
@@ -61,8 +92,29 @@ class _BusinessRegisterScreenState extends State<BusinessRegisterScreen> {
               enabled: !isLoading,
               label: 'auth.business_name'.tr(),
               prefixIcon: const Icon(Icons.store_outlined),
-              // validator: (v) =>
-              //     AppUtils.isBlank(v) ? 'auth.business_name_required'.tr() : null,
+              validator: (v) =>
+                  AppUtils.isBlank(v) ? 'auth.business_name_required'.tr() : null,
+            ),
+            SizedBox(height: AppSpacing.md.h),
+            DropdownButtonFormField<int>(
+              initialValue: _selectedCategoryId,
+              decoration: InputDecoration(
+                labelText: 'auth.category'.tr(),
+                border: OutlineInputBorder(borderRadius: AppBorders.sm),
+              ),
+              items: _categories
+                  .map(
+                    (category) => DropdownMenuItem<int>(
+                      value: category['id'] as int,
+                      child: Text(category['name'] as String? ?? ''),
+                    ),
+                  )
+                  .toList(),
+              onChanged: isLoading
+                  ? null
+                  : (value) => setState(() => _selectedCategoryId = value),
+              validator: (value) =>
+                  value == null ? 'auth.category_required'.tr() : null,
             ),
             SizedBox(height: AppSpacing.md.h),
             AppTextField(
@@ -71,15 +123,15 @@ class _BusinessRegisterScreenState extends State<BusinessRegisterScreen> {
               keyboardType: TextInputType.emailAddress,
               label: 'auth.email'.tr(),
               prefixIcon: const Icon(Icons.email_outlined),
-              // validator: (v) {
-              //   if (AppUtils.isBlank(v)) {
-              //     return 'auth.email_required'.tr();
-              //   }
-              //   if (!AppUtils.isValidEmail(v!)) {
-              //     return 'auth.email_invalid'.tr();
-              //   }
-              //   return null;
-              // },
+              validator: (v) {
+                if (AppUtils.isBlank(v)) {
+                  return 'auth.email_required'.tr();
+                }
+                if (!AppUtils.isValidEmail(v!)) {
+                  return 'auth.email_invalid'.tr();
+                }
+                return null;
+              },
             ),
             SizedBox(height: AppSpacing.md.h),
             AppTextField(
@@ -96,15 +148,15 @@ class _BusinessRegisterScreenState extends State<BusinessRegisterScreen> {
                   setState(() => _obscurePassword = !_obscurePassword);
                 },
               ),
-              // validator: (v) {
-              //   if (AppUtils.isBlank(v)) {
-              //     return 'auth.password_required'.tr();
-              //   }
-              //   if (v!.length < 6) {
-              //     return 'auth.password_too_short'.tr();
-              //   }
-              //   return null;
-              // },
+              validator: (v) {
+                if (AppUtils.isBlank(v)) {
+                  return 'auth.password_required'.tr();
+                }
+                if (v!.length < 6) {
+                  return 'auth.password_too_short'.tr();
+                }
+                return null;
+              },
             ),
             SizedBox(height: AppSpacing.md.h),
             AppTextField(
@@ -125,15 +177,15 @@ class _BusinessRegisterScreenState extends State<BusinessRegisterScreen> {
                   );
                 },
               ),
-              // validator: (v) {
-              //   if (AppUtils.isBlank(v)) {
-              //     return 'auth.confirm_password_required'.tr();
-              //   }
-              //   if (v != _passwordController.text) {
-              //     return 'auth.passwords_do_not_match'.tr();
-              //   }
-              //   return null;
-              // },
+              validator: (v) {
+                if (AppUtils.isBlank(v)) {
+                  return 'auth.confirm_password_required'.tr();
+                }
+                if (v != _passwordController.text) {
+                  return 'auth.passwords_do_not_match'.tr();
+                }
+                return null;
+              },
             ),
             SizedBox(height: AppSpacing.lg.h),
             AppButton(

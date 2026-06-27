@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
+import 'package:goluto_business/src/features/business/domain/entities/offer_branch_stat.dart';
 import 'package:goluto_business/src/features/business/domain/enums/offer_branch_scope.dart';
-import 'package:goluto_business/src/features/business/domain/enums/offer_status.dart';
+import 'package:goluto_business/src/features/business/domain/enums/offer_display_status.dart';
 import 'package:goluto_business/src/features/business/domain/enums/offer_type.dart';
 import 'package:goluto_business/src/features/business/domain/enums/usage_limit_type.dart';
 
@@ -13,18 +14,21 @@ class Offer extends Equatable {
     required this.discountPercent,
     required this.branchScope,
     required this.usageLimitType,
-    required this.qrToken,
+    required this.qrCode,
     required this.createdAt,
     this.description,
     this.branchIds = const [],
-    this.itemDiscounts = const {},
-    this.customUsageCount,
-    this.customUsagePeriod = 'month',
-    this.validFrom,
-    this.validUntil,
-    this.status = OfferStatus.active,
-    this.scanCount = 0,
-    this.redemptionCount = 0,
+    this.usageLimitCount = 1,
+    this.itemName,
+    this.originalPrice,
+    this.discountedPrice,
+    this.isEnabled = true,
+    this.isTimeLimited = false,
+    this.isActive = true,
+    this.startsAt,
+    this.endsAt,
+    this.branchStats = const [],
+    this.imageUrl,
   });
 
   final String id;
@@ -32,28 +36,37 @@ class Offer extends Equatable {
   final String title;
   final String? description;
   final OfferType type;
-  final OfferStatus status;
   final OfferBranchScope branchScope;
   final List<String> branchIds;
-
-  /// Item ID → discount % (product offers only).
-  final Map<String, double> itemDiscounts;
-
-  /// Bill-level discount when [type] is [OfferType.billDiscount].
   final double discountPercent;
   final UsageLimitType usageLimitType;
-  final int? customUsageCount;
-  final String customUsagePeriod;
-  final DateTime? validFrom;
-  final DateTime? validUntil;
-  final int scanCount;
-  final int redemptionCount;
-  final String qrToken;
+  final int usageLimitCount;
+  final String? itemName;
+  final double? originalPrice;
+  final double? discountedPrice;
+  final bool isEnabled;
+  final bool isTimeLimited;
+  final bool isActive;
+  final DateTime? startsAt;
+  final DateTime? endsAt;
+  final String qrCode;
   final DateTime createdAt;
+  final List<OfferBranchStat> branchStats;
+  final String? imageUrl;
+
+  int get scanCount =>
+      branchStats.fold<int>(0, (sum, stat) => sum + stat.scanCount);
+
+  int get redemptionCount =>
+      branchStats.fold<int>(0, (sum, stat) => sum + stat.availCount);
+
+  OfferDisplayStatus get displayStatus {
+    if (!isEnabled) return OfferDisplayStatus.paused;
+    if (!isActive) return OfferDisplayStatus.expired;
+    return OfferDisplayStatus.active;
+  }
 
   bool get appliesToAllBranches => branchScope == OfferBranchScope.allBranches;
-
-  List<String> get itemIds => itemDiscounts.keys.toList();
 
   Offer copyWith({
     String? id,
@@ -61,20 +74,23 @@ class Offer extends Equatable {
     String? title,
     String? description,
     OfferType? type,
-    OfferStatus? status,
     OfferBranchScope? branchScope,
     List<String>? branchIds,
-    Map<String, double>? itemDiscounts,
     double? discountPercent,
     UsageLimitType? usageLimitType,
-    int? customUsageCount,
-    String? customUsagePeriod,
-    DateTime? validFrom,
-    DateTime? validUntil,
-    int? scanCount,
-    int? redemptionCount,
-    String? qrToken,
+    int? usageLimitCount,
+    String? itemName,
+    double? originalPrice,
+    double? discountedPrice,
+    bool? isEnabled,
+    bool? isTimeLimited,
+    bool? isActive,
+    DateTime? startsAt,
+    DateTime? endsAt,
+    String? qrCode,
     DateTime? createdAt,
+    List<OfferBranchStat>? branchStats,
+    String? imageUrl,
   }) {
     return Offer(
       id: id ?? this.id,
@@ -82,20 +98,23 @@ class Offer extends Equatable {
       title: title ?? this.title,
       description: description ?? this.description,
       type: type ?? this.type,
-      status: status ?? this.status,
       branchScope: branchScope ?? this.branchScope,
       branchIds: branchIds ?? this.branchIds,
-      itemDiscounts: itemDiscounts ?? this.itemDiscounts,
       discountPercent: discountPercent ?? this.discountPercent,
       usageLimitType: usageLimitType ?? this.usageLimitType,
-      customUsageCount: customUsageCount ?? this.customUsageCount,
-      customUsagePeriod: customUsagePeriod ?? this.customUsagePeriod,
-      validFrom: validFrom ?? this.validFrom,
-      validUntil: validUntil ?? this.validUntil,
-      scanCount: scanCount ?? this.scanCount,
-      redemptionCount: redemptionCount ?? this.redemptionCount,
-      qrToken: qrToken ?? this.qrToken,
+      usageLimitCount: usageLimitCount ?? this.usageLimitCount,
+      itemName: itemName ?? this.itemName,
+      originalPrice: originalPrice ?? this.originalPrice,
+      discountedPrice: discountedPrice ?? this.discountedPrice,
+      isEnabled: isEnabled ?? this.isEnabled,
+      isTimeLimited: isTimeLimited ?? this.isTimeLimited,
+      isActive: isActive ?? this.isActive,
+      startsAt: startsAt ?? this.startsAt,
+      endsAt: endsAt ?? this.endsAt,
+      qrCode: qrCode ?? this.qrCode,
       createdAt: createdAt ?? this.createdAt,
+      branchStats: branchStats ?? this.branchStats,
+      imageUrl: imageUrl ?? this.imageUrl,
     );
   }
 
@@ -106,19 +125,22 @@ class Offer extends Equatable {
         title,
         description,
         type,
-        status,
         branchScope,
         branchIds,
-        itemDiscounts,
         discountPercent,
         usageLimitType,
-        customUsageCount,
-        customUsagePeriod,
-        validFrom,
-        validUntil,
-        scanCount,
-        redemptionCount,
-        qrToken,
+        usageLimitCount,
+        itemName,
+        originalPrice,
+        discountedPrice,
+        isEnabled,
+        isTimeLimited,
+        isActive,
+        startsAt,
+        endsAt,
+        qrCode,
         createdAt,
+        branchStats,
+        imageUrl,
       ];
 }

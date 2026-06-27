@@ -1,4 +1,4 @@
-import 'package:goluto_business/src/features/business/domain/enums/offer_status.dart';
+import 'package:goluto_business/src/features/business/domain/enums/offer_display_status.dart';
 import 'package:goluto_business/src/features/business/domain/enums/offer_type.dart';
 import 'package:goluto_business/src/features/business/presentation/providers/business_providers.dart';
 import 'package:goluto_business/src/features/business/utils/offer_qr_codec.dart';
@@ -17,7 +17,6 @@ class OfferDetailScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final offerAsync = ref.watch(offerDetailProvider(offerId));
     final branchesAsync = ref.watch(branchesListProvider);
-    final itemsAsync = ref.watch(itemsListProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -44,10 +43,7 @@ class OfferDetailScreen extends ConsumerWidget {
             );
           }
 
-          final cs = context.theme.colorScheme;
-
           final branches = branchesAsync.whenOrNull(data: (data) => data) ?? [];
-          final items = itemsAsync.whenOrNull(data: (data) => data) ?? [];
           final branchNames = offer.appliesToAllBranches
               ? ['offers.all_branches'.tr()]
               : branches
@@ -84,43 +80,15 @@ class OfferDetailScreen extends ConsumerWidget {
                 ),
                 _DetailRow(
                   label: 'offers.discount'.tr(),
-                  value: OfferDisplayHelper.discountLabel(offer, items: items),
+                  value: OfferDisplayHelper.discountLabel(offer),
                 ),
-                if (offer.type == OfferType.productDiscount &&
-                    offer.itemDiscounts.isNotEmpty) ...[
-                  SizedBox(height: AppSpacing.sm.h),
-                  Text(
-                    'offers.included_items'.tr(),
-                    style: context.theme.textTheme.titleSmall,
+                if (offer.type == OfferType.item &&
+                    offer.itemName != null &&
+                    offer.itemName!.isNotEmpty) ...[
+                  _DetailRow(
+                    label: 'offers.field_item_name'.tr(),
+                    value: offer.itemName!,
                   ),
-                  SizedBox(height: AppSpacing.sm.h),
-                  ...offer.itemDiscounts.entries.map((entry) {
-                    final item =
-                        items.where((i) => i.id == entry.key).firstOrNull;
-                    return Padding(
-                      padding: EdgeInsets.only(bottom: AppSpacing.xs.h),
-                      child: Row(
-                        children: [
-                          Icon(Icons.check, size: 16.sp, color: cs.primary),
-                          SizedBox(width: AppSpacing.sm.w),
-                          Expanded(
-                            child: Text(
-                              item?.name ?? entry.key,
-                              style: context.theme.textTheme.bodyMedium,
-                            ),
-                          ),
-                          Text(
-                            '${entry.value.toStringAsFixed(0)}%',
-                            style: context.theme.textTheme.bodyMedium?.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: cs.primary,
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                  }),
-                  SizedBox(height: AppSpacing.md.h),
                 ],
                 _DetailRow(
                   label: 'offers.field_usage_limit'.tr(),
@@ -132,7 +100,7 @@ class OfferDetailScreen extends ConsumerWidget {
                 ),
                 _DetailRow(
                   label: 'offers.status'.tr(),
-                  value: offer.status.labelKey.tr(),
+                  value: offer.displayStatus.labelKey.tr(),
                 ),
                 SizedBox(height: AppSpacing.lg.h),
                 Wrap(
@@ -157,53 +125,63 @@ class OfferDetailScreen extends ConsumerWidget {
                   subtitle: 'offers.qr_subtitle'.tr(),
                   child: Column(
                     children: [
-                      Center(
-                        child: Container(
+                      if (offer.qrCode.isEmpty)
+                        Padding(
                           padding: EdgeInsets.all(AppSpacing.lg.w),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: AppBorders.md,
+                          child: Text(
+                            'offers.qr_unavailable'.tr(),
+                            style: context.theme.textTheme.bodyMedium,
                           ),
-                          child: QrImageView(
-                            data: qrPayload,
-                            version: QrVersions.auto,
-                            size: 200.w,
-                            backgroundColor: Colors.white,
+                        )
+                      else ...[
+                        Center(
+                          child: Container(
+                            padding: EdgeInsets.all(AppSpacing.lg.w),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: AppBorders.md,
+                            ),
+                            child: QrImageView(
+                              data: qrPayload,
+                              version: QrVersions.auto,
+                              size: 200.w,
+                              backgroundColor: Colors.white,
+                            ),
                           ),
                         ),
-                      ),
-                      SizedBox(height: AppSpacing.lg.h),
-                      SelectableText(
-                        qrPayload,
-                        style: context.theme.textTheme.bodySmall?.copyWith(
-                          fontFamily: 'monospace',
-                          color: context.theme.colorScheme.onSurfaceVariant,
+                        SizedBox(height: AppSpacing.lg.h),
+                        SelectableText(
+                          qrPayload,
+                          style: context.theme.textTheme.bodySmall?.copyWith(
+                            fontFamily: 'monospace',
+                            color: context.theme.colorScheme.onSurfaceVariant,
+                          ),
                         ),
-                      ),
-                      SizedBox(height: AppSpacing.lg.h),
-                      AppButton(
-                        label: 'offers.copy_qr'.tr(),
-                        variant: ButtonVariant.secondary,
-                        prefixIcon: const Icon(Icons.copy, size: 18),
-                        isFullWidth: true,
-                        onPressed: () async {
-                          final result =
-                              await CopyService.instance.copy(qrPayload);
-                          if (!context.mounted) return;
-                          result.fold(
-                            (_) => showToast(
-                              context,
-                              message: 'offers.copy_error'.tr(),
-                              status: 'error',
-                            ),
-                            (_) => showToast(
-                              context,
-                              message: 'offers.copy_success'.tr(),
-                              status: 'success',
-                            ),
-                          );
-                        },
-                      ),
+                        SizedBox(height: AppSpacing.lg.h),
+                        AppButton(
+                          label: 'offers.copy_qr'.tr(),
+                          variant: ButtonVariant.secondary,
+                          prefixIcon: const Icon(Icons.copy, size: 18),
+                          isFullWidth: true,
+                          onPressed: () async {
+                            final result =
+                                await CopyService.instance.copy(qrPayload);
+                            if (!context.mounted) return;
+                            result.fold(
+                              (_) => showToast(
+                                context,
+                                message: 'offers.copy_error'.tr(),
+                                status: 'error',
+                              ),
+                              (_) => showToast(
+                                context,
+                                message: 'offers.copy_success'.tr(),
+                                status: 'success',
+                              ),
+                            );
+                          },
+                        ),
+                      ],
                     ],
                   ),
                 ),

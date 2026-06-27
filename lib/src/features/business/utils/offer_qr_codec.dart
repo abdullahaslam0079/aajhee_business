@@ -4,9 +4,8 @@ import 'package:goluto_business/src/features/business/domain/entities/offer.dart
 
 /// Encodes offer data into a QR payload string for the GoLuto user app scanner.
 ///
-/// Format: `GOLUTO:` + JSON with version, offerId, and token.
-/// The user app reads [Barcode.rawValue] as an opaque string today; this
-/// contract is ready for future parsing and redemption API calls.
+/// Format: `GOLUTO:` + JSON with version, offerId, and qr_code UUID.
+/// The consumer app validates the UUID against the backend scan/redeem APIs.
 class OfferQrCodec {
   OfferQrCodec._();
 
@@ -15,9 +14,10 @@ class OfferQrCodec {
   static String encode(Offer offer) {
     final payload = jsonEncode({
       'v': 1,
-      'offerId': offer.id,
-      'businessId': offer.businessId,
-      'token': offer.qrToken,
+      'offerId': int.tryParse(offer.id) ?? offer.id,
+      'qr_code': offer.qrCode,
+      // Legacy alias kept for older scanner builds.
+      'token': offer.qrCode,
     });
     return '$prefix$payload';
   }

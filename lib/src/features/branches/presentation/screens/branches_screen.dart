@@ -85,12 +85,10 @@ class _BranchCard extends ConsumerWidget {
                   branch.name,
                   style: tt.titleMedium?.copyWith(fontWeight: FontWeight.w600),
                 ),
-                if (branch.address != null) ...[
+                if (branch.address != null || branch.city.isNotEmpty) ...[
                   SizedBox(height: AppSpacing.xs.h),
                   Text(
-                    [branch.address, branch.city]
-                        .where((e) => e != null && e.isNotEmpty)
-                        .join(', '),
+                    branch.formattedAddress,
                     style: tt.bodySmall?.copyWith(color: cs.onSurfaceVariant),
                   ),
                 ],

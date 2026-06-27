@@ -1,6 +1,5 @@
-import 'package:goluto_business/src/features/business/domain/entities/business_item.dart';
 import 'package:goluto_business/src/features/business/domain/entities/offer.dart';
-import 'package:goluto_business/src/features/business/domain/enums/offer_status.dart';
+import 'package:goluto_business/src/features/business/domain/enums/offer_display_status.dart';
 import 'package:goluto_business/src/features/business/presentation/providers/business_providers.dart';
 import 'package:goluto_business/src/features/offers/presentation/helpers/offer_display_helper.dart';
 import 'package:goluto_business/src/imports/core_imports.dart';
@@ -13,8 +12,6 @@ class OffersScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final offersAsync = ref.watch(offersListProvider);
-    final itemsAsync = ref.watch(itemsListProvider);
-    final items = itemsAsync.whenOrNull(data: (data) => data) ?? [];
 
     return Scaffold(
       appBar: AppBar(
@@ -49,7 +46,7 @@ class OffersScreen extends ConsumerWidget {
               itemCount: offers.length,
               separatorBuilder: (_, __) => SizedBox(height: AppSpacing.md.h),
               itemBuilder: (context, index) {
-                return _OfferCard(offer: offers[index], items: items);
+                return _OfferCard(offer: offers[index]);
               },
             ),
           );
@@ -60,19 +57,18 @@ class OffersScreen extends ConsumerWidget {
 }
 
 class _OfferCard extends StatelessWidget {
-  const _OfferCard({required this.offer, required this.items});
+  const _OfferCard({required this.offer});
 
   final Offer offer;
-  final List<BusinessItem> items;
 
   @override
   Widget build(BuildContext context) {
     final cs = context.theme.colorScheme;
     final tt = context.theme.textTheme;
-    final statusColor = switch (offer.status) {
-      OfferStatus.active => context.appColors.success,
-      OfferStatus.paused => context.appColors.warning,
-      OfferStatus.expired => cs.error,
+    final statusColor = switch (offer.displayStatus) {
+      OfferDisplayStatus.active => context.appColors.success,
+      OfferDisplayStatus.paused => context.appColors.warning,
+      OfferDisplayStatus.expired => cs.error,
     };
 
     return AppCard(
@@ -98,7 +94,7 @@ class _OfferCard extends StatelessWidget {
                   borderRadius: AppBorders.sm,
                 ),
                 child: Text(
-                  offer.status.labelKey.tr(),
+                  offer.displayStatus.labelKey.tr(),
                   style: tt.labelSmall?.copyWith(
                     color: statusColor,
                     fontWeight: FontWeight.w600,
@@ -118,7 +114,7 @@ class _OfferCard extends StatelessWidget {
           ],
           SizedBox(height: AppSpacing.sm.h),
           Text(
-            OfferDisplayHelper.discountLabel(offer, items: items),
+            OfferDisplayHelper.discountLabel(offer),
             style: tt.bodyMedium?.copyWith(
               color: cs.primary,
               fontWeight: FontWeight.w500,

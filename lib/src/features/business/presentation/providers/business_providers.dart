@@ -1,16 +1,16 @@
-import 'package:goluto_business/src/features/business/data/repositories/business_repository_impl.dart';
+import 'package:goluto_business/src/features/business/data/repositories/business_api_repository.dart';
 import 'package:goluto_business/src/features/business/domain/entities/branch.dart';
-import 'package:goluto_business/src/features/business/domain/entities/business_item.dart';
 import 'package:goluto_business/src/features/business/domain/entities/dashboard_stats.dart';
 import 'package:goluto_business/src/features/business/domain/entities/offer.dart';
 import 'package:goluto_business/src/features/business/domain/repositories/business_repository.dart';
+import 'package:goluto_business/src/services/dio_service.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'business_providers.g.dart';
 
 @Riverpod(keepAlive: true)
 BusinessRepository businessRepository(Ref ref) {
-  return BusinessRepositoryImpl.instance;
+  return BusinessApiRepository(DioService.instance);
 }
 
 @Riverpod(keepAlive: true)
@@ -30,13 +30,21 @@ class BranchesList extends _$BranchesList {
 
   Future<bool> createBranch({
     required String name,
-    String? address,
-    String? city,
+    required String street,
+    required String houseNumber,
+    required String postalCode,
+    required String city,
+    required double latitude,
+    required double longitude,
   }) async {
     final result = await ref.read(businessRepositoryProvider).createBranch(
           name: name,
-          address: address,
+          street: street,
+          houseNumber: houseNumber,
+          postalCode: postalCode,
           city: city,
+          latitude: latitude,
+          longitude: longitude,
         );
     return result.fold(
       (_) => false,
@@ -70,66 +78,6 @@ class BranchesList extends _$BranchesList {
         ref.invalidateSelf();
         ref.invalidate(offersListProvider);
         ref.invalidate(dashboardStatsProvider);
-        return true;
-      },
-    );
-  }
-}
-
-@Riverpod(keepAlive: true)
-class ItemsList extends _$ItemsList {
-  @override
-  Future<List<BusinessItem>> build() => _load();
-
-  Future<List<BusinessItem>> _load() async {
-    final result = await ref.read(businessRepositoryProvider).getItems();
-    return result.getOrElse((_) => []);
-  }
-
-  Future<void> refresh() async {
-    state = const AsyncLoading();
-    state = AsyncData(await _load());
-  }
-
-  Future<bool> createItem({
-    required String name,
-    required double price,
-    String? description,
-    String? category,
-  }) async {
-    final result = await ref.read(businessRepositoryProvider).createItem(
-          name: name,
-          price: price,
-          description: description,
-          category: category,
-        );
-    return result.fold(
-      (_) => false,
-      (_) {
-        ref.invalidateSelf();
-        return true;
-      },
-    );
-  }
-
-  Future<bool> updateItem(BusinessItem item) async {
-    final result = await ref.read(businessRepositoryProvider).updateItem(item);
-    return result.fold(
-      (_) => false,
-      (_) {
-        ref.invalidateSelf();
-        return true;
-      },
-    );
-  }
-
-  Future<bool> deleteItem(String id) async {
-    final result = await ref.read(businessRepositoryProvider).deleteItem(id);
-    return result.fold(
-      (_) => false,
-      (_) {
-        ref.invalidateSelf();
-        ref.invalidate(offersListProvider);
         return true;
       },
     );
