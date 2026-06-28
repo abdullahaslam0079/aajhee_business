@@ -6,6 +6,7 @@ import 'package:goluto_business/src/features/auth/presentation/screens/business_
 import 'package:goluto_business/src/features/branches/presentation/screens/branch_form_screen.dart';
 import 'package:goluto_business/src/features/branches/presentation/screens/branches_screen.dart';
 import 'package:goluto_business/src/features/dashboard/presentation/screens/dashboard_screen.dart';
+import 'package:goluto_business/src/features/splash/presentation/splash_screen.dart';
 import 'package:goluto_business/src/features/offers/presentation/screens/offer_detail_screen.dart';
 import 'package:goluto_business/src/features/offers/presentation/screens/offer_form_screen.dart';
 import 'package:goluto_business/src/features/offers/presentation/screens/offers_screen.dart';
@@ -33,14 +34,18 @@ GoRouter appRouter(Ref ref) {
 
   return GoRouter(
     navigatorKey: rootNavigatorKey,
-    initialLocation: AppRoutes.login,
+    initialLocation: AppRoutes.splash,
     refreshListenable: refresh,
     redirect: (context, state) {
       final session = ref.read(sessionProvider);
       final location = state.matchedLocation;
 
-      if (session.status == SessionStatus.unknown) {
+      if (location == AppRoutes.splash) {
         return null;
+      }
+
+      if (session.status == SessionStatus.unknown) {
+        return AppRoutes.splash;
       }
 
       if (session.status == SessionStatus.authenticated) {
@@ -50,6 +55,11 @@ GoRouter appRouter(Ref ref) {
       return _isAuthRoute(location) ? null : AppRoutes.login;
     },
     routes: <RouteBase>[
+      GoRoute(
+        path: AppRoutes.splash,
+        name: 'splash',
+        builder: (context, state) => const SplashScreen(),
+      ),
       GoRoute(
         path: AppRoutes.login,
         name: 'login',

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
-import 'text_theme.dart';
+import 'app_fonts.dart';
 import 'color_schemes.dart';
+import 'text_theme.dart';
 
 Color _colorFromHex(String hex) {
   final cleaned = hex.replaceFirst('#', '');
@@ -90,6 +91,7 @@ ThemeData _buildTheme(ColorScheme colorScheme, AppColorsExtension customColors) 
   
   return ThemeData(
     useMaterial3: true,
+    fontFamily: AppFonts.primary,
     primaryColor: colorScheme.primary,
     colorScheme: colorScheme,
     textTheme: textTheme,
