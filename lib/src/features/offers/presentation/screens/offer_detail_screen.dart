@@ -1,12 +1,9 @@
 import 'package:goluto_business/src/features/business/domain/enums/offer_display_status.dart';
 import 'package:goluto_business/src/features/business/domain/enums/offer_type.dart';
 import 'package:goluto_business/src/features/business/presentation/providers/business_providers.dart';
-import 'package:goluto_business/src/features/business/utils/offer_qr_codec.dart';
 import 'package:goluto_business/src/features/offers/presentation/helpers/offer_display_helper.dart';
+import 'package:goluto_business/src/features/offers/presentation/widgets/offer_qr_poster_card.dart';
 import 'package:goluto_business/src/imports/core_imports.dart';
-import 'package:goluto_business/src/imports/packages_imports.dart';
-import 'package:goluto_business/src/routing/app_routes.dart';
-import 'package:qr_flutter/qr_flutter.dart';
 
 class OfferDetailScreen extends ConsumerWidget {
   const OfferDetailScreen({super.key, required this.offerId});
@@ -51,7 +48,11 @@ class OfferDetailScreen extends ConsumerWidget {
                   .map((b) => b.name)
                   .toList();
 
-          final qrPayload = OfferQrCodec.encode(offer);
+          final qrBranches = offer.appliesToAllBranches
+              ? branches
+              : branches
+                  .where((b) => offer.branchIds.contains(b.id))
+                  .toList();
 
           return SingleChildScrollView(
             padding: EdgeInsets.all(AppSpacing.lg.w),
@@ -122,67 +123,10 @@ class OfferDetailScreen extends ConsumerWidget {
                 SizedBox(height: AppSpacing.xxxl.h),
                 AppCard(
                   title: 'offers.qr_title'.tr(),
-                  subtitle: 'offers.qr_subtitle'.tr(),
-                  child: Column(
-                    children: [
-                      if (offer.qrCode.isEmpty)
-                        Padding(
-                          padding: EdgeInsets.all(AppSpacing.lg.w),
-                          child: Text(
-                            'offers.qr_unavailable'.tr(),
-                            style: context.theme.textTheme.bodyMedium,
-                          ),
-                        )
-                      else ...[
-                        Center(
-                          child: Container(
-                            padding: EdgeInsets.all(AppSpacing.lg.w),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: AppBorders.md,
-                            ),
-                            child: QrImageView(
-                              data: qrPayload,
-                              version: QrVersions.auto,
-                              size: 200.w,
-                              backgroundColor: Colors.white,
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: AppSpacing.lg.h),
-                        SelectableText(
-                          qrPayload,
-                          style: context.theme.textTheme.bodySmall?.copyWith(
-                            fontFamily: 'monospace',
-                            color: context.theme.colorScheme.onSurfaceVariant,
-                          ),
-                        ),
-                        SizedBox(height: AppSpacing.lg.h),
-                        AppButton(
-                          label: 'offers.copy_qr'.tr(),
-                          variant: ButtonVariant.secondary,
-                          prefixIcon: const Icon(Icons.copy, size: 18),
-                          isFullWidth: true,
-                          onPressed: () async {
-                            final result =
-                                await CopyService.instance.copy(qrPayload);
-                            if (!context.mounted) return;
-                            result.fold(
-                              (_) => showToast(
-                                context,
-                                message: 'offers.copy_error'.tr(),
-                                status: 'error',
-                              ),
-                              (_) => showToast(
-                                context,
-                                message: 'offers.copy_success'.tr(),
-                                status: 'success',
-                              ),
-                            );
-                          },
-                        ),
-                      ],
-                    ],
+                  subtitle: 'offers.poster_subtitle'.tr(),
+                  child: OfferQrPosterCard(
+                    offer: offer,
+                    branches: qrBranches,
                   ),
                 ),
               ],

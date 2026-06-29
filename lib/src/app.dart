@@ -26,7 +26,7 @@ class App extends ConsumerWidget {
       supportedLocales: context.supportedLocales,
       locale: context.locale,
       builder: (context, child) {
-        Widget current = child!;
+        Widget current = child ?? const SizedBox.shrink();
         current = SkeletonWrapper(child: current);
         current = SessionListenerWrapper(child: current);
         return current;

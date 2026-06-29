@@ -118,7 +118,7 @@ final class OffersListProvider
   OffersList create() => OffersList();
 }
 
-String _$offersListHash() => r'58d9dcb723597ab5f4b3c14dbff186068835865a';
+String _$offersListHash() => r'a64b7a23f7f9507eb616f559bd4ff469faf332d4';
 
 abstract class _$OffersList extends $AsyncNotifier<List<Offer>> {
   FutureOr<List<Offer>> build();

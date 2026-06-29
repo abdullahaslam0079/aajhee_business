@@ -99,15 +99,15 @@ class OffersList extends _$OffersList {
     state = AsyncData(await _load());
   }
 
-  Future<bool> createOffer(Offer offer) async {
+  Future<Offer?> createOffer(Offer offer) async {
     final result =
         await ref.read(businessRepositoryProvider).createOffer(offer);
     return result.fold(
-      (_) => false,
-      (_) {
+      (_) => null,
+      (created) {
         ref.invalidateSelf();
         ref.invalidate(dashboardStatsProvider);
-        return true;
+        return created;
       },
     );
   }

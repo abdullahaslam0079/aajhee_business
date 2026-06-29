@@ -181,6 +181,9 @@
     "redemptions": "redemptions",
     "qr_title": "Offer QR Code",
     "qr_subtitle": "Customers scan this from the GoLuto user app",
+    "poster_subtitle": "Print or display this poster at your counter. Customers scan it with the GoLuto app — no business dashboard needed at checkout.",
+    "poster_branch_label": "Poster branch",
+    "poster_scan_hint": "Scan with GoLuto app · payment amount shown on customer's phone",
     "copy_qr": "Copy QR Payload",
     "copy_success": "QR payload copied to clipboard",
     "copy_error": "Could not copy to clipboard"

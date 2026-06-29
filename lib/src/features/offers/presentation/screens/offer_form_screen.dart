@@ -146,16 +146,27 @@ class _OfferFormScreenState extends ConsumerState<OfferFormScreen> {
     setState(() => _isSaving = true);
     final draft = _buildOfferDraft();
     final notifier = ref.read(offersListProvider.notifier);
-    final success = widget.isEditing
-        ? await notifier.updateOffer(draft)
-        : await notifier.createOffer(draft);
+    if (widget.isEditing) {
+      final success = await notifier.updateOffer(draft);
+      if (!mounted) return;
+      setState(() => _isSaving = false);
+      if (success) {
+        showToast(context, message: 'offers.saved'.tr(), status: 'success');
+        context.pop();
+      } else {
+        showToast(context, message: 'offers.save_error'.tr(), status: 'error');
+      }
+      return;
+    }
 
+    final created = await notifier.createOffer(draft);
     if (!mounted) return;
     setState(() => _isSaving = false);
 
-    if (success) {
+    if (created != null) {
       showToast(context, message: 'offers.saved'.tr(), status: 'success');
       context.pop();
+      context.push(AppRoutes.offerDetail(created.id));
     } else {
       showToast(context, message: 'offers.save_error'.tr(), status: 'error');
     }

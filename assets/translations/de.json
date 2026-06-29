@@ -181,6 +181,9 @@
     "redemptions": "Einlösungen",
     "qr_title": "Angebots-QR-Code",
     "qr_subtitle": "Kunden scannen dies in der GoLuto-Nutzer-App",
+    "poster_subtitle": "Drucken oder zeigen Sie dieses Poster an der Theke. Kunden scannen es mit der GoLuto-App — kein Business-Dashboard nötig.",
+    "poster_branch_label": "Filial-Poster",
+    "poster_scan_hint": "Mit GoLuto-App scannen · Betrag erscheint auf dem Handy des Kunden",
     "copy_qr": "QR-Payload kopieren",
     "copy_success": "QR-Payload in Zwischenablage kopiert",
     "copy_error": "Kopieren fehlgeschlagen"

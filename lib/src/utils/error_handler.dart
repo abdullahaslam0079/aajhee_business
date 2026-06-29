@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 
 class AppErrorHandler {
   static String format(dynamic error) {
@@ -46,6 +47,10 @@ class AppErrorHandler {
     }
 
     if (error.type == DioExceptionType.connectionError) {
+      if (kIsWeb) {
+        return 'Could not reach the server from the browser. '
+            'The API must allow cross-origin requests (CORS) for web clients.';
+      }
       return 'Could not connect to the server.';
     }
 
