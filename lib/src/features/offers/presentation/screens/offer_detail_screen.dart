@@ -1,3 +1,6 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:goluto_business/src/features/business/domain/enums/offer_display_status.dart';
 import 'package:goluto_business/src/features/business/domain/enums/offer_type.dart';
 import 'package:goluto_business/src/features/business/presentation/providers/business_providers.dart';
@@ -50,9 +53,7 @@ class OfferDetailScreen extends ConsumerWidget {
 
           final qrBranches = offer.appliesToAllBranches
               ? branches
-              : branches
-                  .where((b) => offer.branchIds.contains(b.id))
-                  .toList();
+              : branches.where((b) => offer.branchIds.contains(b.id)).toList();
 
           return SingleChildScrollView(
             padding: EdgeInsets.all(AppSpacing.lg.w),

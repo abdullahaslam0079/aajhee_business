@@ -45,7 +45,7 @@ class AppConfig {
   static String _getBaseUrl() {
     return dotenv.get(
       'API_BASE_URL',
-      fallback: 'https://goluto-backend.onrender.com/api',
+      fallback: 'https://api.goluto.de/api',
     );
   }
 }
