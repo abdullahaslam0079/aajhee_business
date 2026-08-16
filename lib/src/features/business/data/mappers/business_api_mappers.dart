@@ -113,7 +113,6 @@ class BusinessApiMappers {
         payload['discounted_price'] = offer.discountedPrice?.toStringAsFixed(2);
       case OfferType.deal:
         payload['included_items'] = offer.includedItems;
-        payload['original_price'] = offer.originalPrice?.toStringAsFixed(2);
         payload['discounted_price'] = offer.discountedPrice?.toStringAsFixed(2);
     }
 

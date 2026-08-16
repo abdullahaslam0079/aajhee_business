@@ -177,10 +177,10 @@ class _OfferFormScreenState extends ConsumerState<OfferFormScreen> {
           ? _itemNameController.text.trim()
           : null,
       includedItems: _type == OfferType.deal ? _includedItems : const [],
-      originalPrice: _type.usesFixedPrice
+      originalPrice: _type.usesCompareAtPrice
           ? double.tryParse(_originalPriceController.text.trim())
           : null,
-      discountedPrice: _type.usesFixedPrice
+      discountedPrice: _type.usesDealPrice
           ? double.tryParse(_discountedPriceController.text.trim())
           : null,
       isEnabled: _isEnabled,
@@ -381,21 +381,6 @@ class _OfferFormScreenState extends ConsumerState<OfferFormScreen> {
                 ),
                 SizedBox(height: AppSpacing.md.h),
                 AppTextField(
-                  label: 'offers.field_original_price'.tr(),
-                  controller: _originalPriceController,
-                  keyboardType: const TextInputType.numberWithOptions(
-                    decimal: true,
-                  ),
-                  validator: (v) {
-                    final value = double.tryParse(v ?? '');
-                    if (value == null || value <= 0) {
-                      return 'offers.price_invalid'.tr();
-                    }
-                    return null;
-                  },
-                ),
-                SizedBox(height: AppSpacing.lg.h),
-                AppTextField(
                   label: 'offers.field_deal_price'.tr(),
                   controller: _discountedPriceController,
                   keyboardType: const TextInputType.numberWithOptions(
@@ -403,13 +388,8 @@ class _OfferFormScreenState extends ConsumerState<OfferFormScreen> {
                   ),
                   validator: (v) {
                     final discounted = double.tryParse(v ?? '');
-                    final original =
-                        double.tryParse(_originalPriceController.text.trim());
-                    if (discounted == null || discounted < 0) {
+                    if (discounted == null || discounted <= 0) {
                       return 'offers.price_invalid'.tr();
-                    }
-                    if (original != null && discounted >= original) {
-                      return 'offers.discounted_price_invalid'.tr();
                     }
                     return null;
                   },

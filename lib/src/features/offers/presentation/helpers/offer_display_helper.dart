@@ -15,8 +15,8 @@ class OfferDisplayHelper {
       final items = offer.includedItems.isNotEmpty
           ? offer.includedItems.join(', ')
           : offer.title;
-      if (offer.originalPrice != null && offer.discountedPrice != null) {
-        return '$items (${offer.discountedPrice!.toStringAsFixed(2)}€ / ${offer.originalPrice!.toStringAsFixed(2)}€)';
+      if (offer.discountedPrice != null) {
+        return '$items (${offer.discountedPrice!.toStringAsFixed(2)}€)';
       }
       return items;
     }

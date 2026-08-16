@@ -17,7 +17,9 @@ extension OfferTypeX on OfferType {
         OfferType.deal => 'deal',
       };
 
-  bool get usesFixedPrice =>
+  bool get usesCompareAtPrice => this == OfferType.item;
+
+  bool get usesDealPrice =>
       this == OfferType.item || this == OfferType.deal;
 
   static OfferType fromApi(String value) => switch (value) {
