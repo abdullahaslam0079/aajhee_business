@@ -62,6 +62,10 @@ class BusinessApiMappers {
           UsageLimitTypeX.fromApi(json['usage_limit_type'] as String? ?? ''),
       usageLimitCount: json['usage_limit_count'] as int? ?? 1,
       itemName: _nullableString(json['item_name']),
+      includedItems: (json['included_items'] as List<dynamic>? ?? [])
+          .map((item) => item.toString().trim())
+          .where((item) => item.isNotEmpty)
+          .toList(),
       originalPrice: _nullableDouble(json['original_price']),
       discountedPrice: _nullableDouble(json['discounted_price']),
       isEnabled: json['is_enabled'] as bool? ?? true,
@@ -100,12 +104,17 @@ class BusinessApiMappers {
       'is_time_limited': offer.isTimeLimited,
     };
 
-    if (offer.type == OfferType.percentageBill) {
-      payload['discount_percent'] = offer.discountPercent.toStringAsFixed(2);
-    } else {
-      payload['item_name'] = offer.itemName ?? '';
-      payload['original_price'] = offer.originalPrice?.toStringAsFixed(2);
-      payload['discounted_price'] = offer.discountedPrice?.toStringAsFixed(2);
+    switch (offer.type) {
+      case OfferType.percentageBill:
+        payload['discount_percent'] = offer.discountPercent.toStringAsFixed(2);
+      case OfferType.item:
+        payload['item_name'] = offer.itemName ?? '';
+        payload['original_price'] = offer.originalPrice?.toStringAsFixed(2);
+        payload['discounted_price'] = offer.discountedPrice?.toStringAsFixed(2);
+      case OfferType.deal:
+        payload['included_items'] = offer.includedItems;
+        payload['original_price'] = offer.originalPrice?.toStringAsFixed(2);
+        payload['discounted_price'] = offer.discountedPrice?.toStringAsFixed(2);
     }
 
     if (offer.isTimeLimited) {

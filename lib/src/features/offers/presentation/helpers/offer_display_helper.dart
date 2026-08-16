@@ -11,6 +11,16 @@ class OfferDisplayHelper {
       return '${offer.discountPercent.toStringAsFixed(0)}% ${'offers.off_entire_bill'.tr()}';
     }
 
+    if (offer.type == OfferType.deal) {
+      final items = offer.includedItems.isNotEmpty
+          ? offer.includedItems.join(', ')
+          : offer.title;
+      if (offer.originalPrice != null && offer.discountedPrice != null) {
+        return '$items (${offer.discountedPrice!.toStringAsFixed(2)}€ / ${offer.originalPrice!.toStringAsFixed(2)}€)';
+      }
+      return items;
+    }
+
     if (offer.itemName != null && offer.itemName!.isNotEmpty) {
       if (offer.originalPrice != null && offer.discountedPrice != null) {
         return '${offer.itemName!} (${offer.discountedPrice!.toStringAsFixed(2)}€ / ${offer.originalPrice!.toStringAsFixed(2)}€)';

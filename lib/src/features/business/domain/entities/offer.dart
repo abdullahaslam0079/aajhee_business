@@ -20,6 +20,7 @@ class Offer extends Equatable {
     this.branchIds = const [],
     this.usageLimitCount = 1,
     this.itemName,
+    this.includedItems = const [],
     this.originalPrice,
     this.discountedPrice,
     this.isEnabled = true,
@@ -42,6 +43,7 @@ class Offer extends Equatable {
   final UsageLimitType usageLimitType;
   final int usageLimitCount;
   final String? itemName;
+  final List<String> includedItems;
   final double? originalPrice;
   final double? discountedPrice;
   final bool isEnabled;
@@ -80,6 +82,7 @@ class Offer extends Equatable {
     UsageLimitType? usageLimitType,
     int? usageLimitCount,
     String? itemName,
+    List<String>? includedItems,
     double? originalPrice,
     double? discountedPrice,
     bool? isEnabled,
@@ -104,6 +107,7 @@ class Offer extends Equatable {
       usageLimitType: usageLimitType ?? this.usageLimitType,
       usageLimitCount: usageLimitCount ?? this.usageLimitCount,
       itemName: itemName ?? this.itemName,
+      includedItems: includedItems ?? this.includedItems,
       originalPrice: originalPrice ?? this.originalPrice,
       discountedPrice: discountedPrice ?? this.discountedPrice,
       isEnabled: isEnabled ?? this.isEnabled,
@@ -131,6 +135,7 @@ class Offer extends Equatable {
         usageLimitType,
         usageLimitCount,
         itemName,
+        includedItems,
         originalPrice,
         discountedPrice,
         isEnabled,

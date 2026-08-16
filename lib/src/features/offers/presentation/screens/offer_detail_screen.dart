@@ -92,6 +92,13 @@ class OfferDetailScreen extends ConsumerWidget {
                     value: offer.itemName!,
                   ),
                 ],
+                if (offer.type == OfferType.deal &&
+                    offer.includedItems.isNotEmpty) ...[
+                  _DetailRow(
+                    label: 'offers.included_items'.tr(),
+                    value: offer.includedItems.map((item) => '• $item').join('\n'),
+                  ),
+                ],
                 _DetailRow(
                   label: 'offers.field_usage_limit'.tr(),
                   value: OfferDisplayHelper.usageLimitLabel(offer),

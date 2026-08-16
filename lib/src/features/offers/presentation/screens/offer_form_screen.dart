@@ -27,6 +27,7 @@ class _OfferFormScreenState extends ConsumerState<OfferFormScreen> {
   final _originalPriceController = TextEditingController();
   final _discountedPriceController = TextEditingController();
   final _usageCountController = TextEditingController(text: '3');
+  final List<TextEditingController> _includedItemControllers = [];
 
   Offer? _existingOffer;
   List<Branch> _branches = [];
@@ -65,6 +66,7 @@ class _OfferFormScreenState extends ConsumerState<OfferFormScreen> {
           _discountedPriceController.text =
               offer.discountedPrice?.toStringAsFixed(2) ?? '';
           _usageCountController.text = '${offer.usageLimitCount}';
+          _replaceIncludedItemControllers(offer.includedItems);
           _type = offer.type;
           _branchScope = offer.branchScope;
           _usageLimit = offer.usageLimitType;
@@ -79,7 +81,61 @@ class _OfferFormScreenState extends ConsumerState<OfferFormScreen> {
       _branchScope = OfferBranchScope.allBranches;
     }
 
+    if (!widget.isEditing) {
+      _ensureIncludedItemControllers();
+    }
+
     if (mounted) setState(() => _isLoading = false);
+  }
+
+  void _ensureIncludedItemControllers() {
+    if (_includedItemControllers.isNotEmpty) return;
+    _includedItemControllers.addAll([
+      TextEditingController(),
+      TextEditingController(),
+    ]);
+  }
+
+  void _replaceIncludedItemControllers(List<String> items) {
+    for (final controller in _includedItemControllers) {
+      controller.dispose();
+    }
+    _includedItemControllers
+      ..clear()
+      ..addAll(
+        (items.isEmpty ? const ['', ''] : items)
+            .map((item) => TextEditingController(text: item)),
+      );
+    if (_includedItemControllers.length < 2) {
+      _includedItemControllers.add(TextEditingController());
+    }
+  }
+
+  void _addIncludedItem() {
+    setState(() => _includedItemControllers.add(TextEditingController()));
+  }
+
+  void _removeIncludedItem(int index) {
+    if (_includedItemControllers.length <= 2) return;
+    setState(() {
+      _includedItemControllers.removeAt(index).dispose();
+    });
+  }
+
+  List<String> get _includedItems {
+    return _includedItemControllers
+        .map((controller) => controller.text.trim())
+        .where((item) => item.isNotEmpty)
+        .toList();
+  }
+
+  void _onOfferTypeChanged(OfferType type) {
+    setState(() {
+      _type = type;
+      if (type == OfferType.deal) {
+        _ensureIncludedItemControllers();
+      }
+    });
   }
 
   @override
@@ -91,6 +147,9 @@ class _OfferFormScreenState extends ConsumerState<OfferFormScreen> {
     _originalPriceController.dispose();
     _discountedPriceController.dispose();
     _usageCountController.dispose();
+    for (final controller in _includedItemControllers) {
+      controller.dispose();
+    }
     super.dispose();
   }
 
@@ -117,10 +176,11 @@ class _OfferFormScreenState extends ConsumerState<OfferFormScreen> {
       itemName: _type == OfferType.item
           ? _itemNameController.text.trim()
           : null,
-      originalPrice: _type == OfferType.item
+      includedItems: _type == OfferType.deal ? _includedItems : const [],
+      originalPrice: _type.usesFixedPrice
           ? double.tryParse(_originalPriceController.text.trim())
           : null,
-      discountedPrice: _type == OfferType.item
+      discountedPrice: _type.usesFixedPrice
           ? double.tryParse(_discountedPriceController.text.trim())
           : null,
       isEnabled: _isEnabled,
@@ -138,6 +198,15 @@ class _OfferFormScreenState extends ConsumerState<OfferFormScreen> {
       showToast(
         context,
         message: 'offers.branch_required'.tr(),
+        status: 'error',
+      );
+      return;
+    }
+
+    if (_type == OfferType.deal && _includedItems.length < 2) {
+      showToast(
+        context,
+        message: 'offers.included_items_min'.tr(),
         status: 'error',
       );
       return;
@@ -212,6 +281,7 @@ class _OfferFormScreenState extends ConsumerState<OfferFormScreen> {
               Text('offers.field_type'.tr(), style: tt.titleSmall),
               SizedBox(height: AppSpacing.sm.h),
               SegmentedButton<OfferType>(
+                showSelectedIcon: false,
                 segments: OfferType.values
                     .map(
                       (t) => ButtonSegment(
@@ -221,7 +291,7 @@ class _OfferFormScreenState extends ConsumerState<OfferFormScreen> {
                     )
                     .toList(),
                 selected: {_type},
-                onSelectionChanged: (v) => setState(() => _type = v.first),
+                onSelectionChanged: (v) => _onOfferTypeChanged(v.first),
               ),
               SizedBox(height: AppSpacing.lg.h),
               if (_type == OfferType.item) ...[
@@ -250,6 +320,83 @@ class _OfferFormScreenState extends ConsumerState<OfferFormScreen> {
                 SizedBox(height: AppSpacing.lg.h),
                 AppTextField(
                   label: 'offers.field_discounted_price'.tr(),
+                  controller: _discountedPriceController,
+                  keyboardType: const TextInputType.numberWithOptions(
+                    decimal: true,
+                  ),
+                  validator: (v) {
+                    final discounted = double.tryParse(v ?? '');
+                    final original =
+                        double.tryParse(_originalPriceController.text.trim());
+                    if (discounted == null || discounted < 0) {
+                      return 'offers.price_invalid'.tr();
+                    }
+                    if (original != null && discounted >= original) {
+                      return 'offers.discounted_price_invalid'.tr();
+                    }
+                    return null;
+                  },
+                ),
+                SizedBox(height: AppSpacing.lg.h),
+              ],
+              if (_type == OfferType.deal) ...[
+                Text('offers.included_items'.tr(), style: tt.titleSmall),
+                SizedBox(height: AppSpacing.sm.h),
+                ..._includedItemControllers.asMap().entries.map((entry) {
+                  final index = entry.key;
+                  return Padding(
+                    padding: EdgeInsets.only(bottom: AppSpacing.md.h),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: AppTextField(
+                            label: 'offers.included_item_label'.tr(
+                              namedArgs: {'n': '${index + 1}'},
+                            ),
+                            controller: entry.value,
+                            validator: (value) {
+                              if (_includedItems.length >= 2) return null;
+                              if ((value ?? '').trim().isNotEmpty) return null;
+                              return 'offers.included_item_required'.tr();
+                            },
+                          ),
+                        ),
+                        if (_includedItemControllers.length > 2)
+                          IconButton(
+                            onPressed: () => _removeIncludedItem(index),
+                            icon: const Icon(Icons.remove_circle_outline),
+                          ),
+                      ],
+                    ),
+                  );
+                }),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: TextButton.icon(
+                    onPressed: _addIncludedItem,
+                    icon: const Icon(Icons.add),
+                    label: Text('offers.add_included_item'.tr()),
+                  ),
+                ),
+                SizedBox(height: AppSpacing.md.h),
+                AppTextField(
+                  label: 'offers.field_original_price'.tr(),
+                  controller: _originalPriceController,
+                  keyboardType: const TextInputType.numberWithOptions(
+                    decimal: true,
+                  ),
+                  validator: (v) {
+                    final value = double.tryParse(v ?? '');
+                    if (value == null || value <= 0) {
+                      return 'offers.price_invalid'.tr();
+                    }
+                    return null;
+                  },
+                ),
+                SizedBox(height: AppSpacing.lg.h),
+                AppTextField(
+                  label: 'offers.field_deal_price'.tr(),
                   controller: _discountedPriceController,
                   keyboardType: const TextInputType.numberWithOptions(
                     decimal: true,
