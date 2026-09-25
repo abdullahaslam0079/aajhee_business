@@ -1,7 +1,7 @@
-import 'package:goluto_business/src/features/business/domain/entities/branch.dart';
-import 'package:goluto_business/src/features/business/domain/entities/dashboard_stats.dart';
-import 'package:goluto_business/src/features/business/domain/entities/offer.dart';
-import 'package:goluto_business/src/utils/typedefs.dart';
+import 'package:aajhee_business/src/features/business/domain/entities/branch.dart';
+import 'package:aajhee_business/src/features/business/domain/entities/dashboard_stats.dart';
+import 'package:aajhee_business/src/features/business/domain/entities/offer.dart';
+import 'package:aajhee_business/src/utils/typedefs.dart';
 
 abstract class BusinessRepository {
   FutureEither<List<Branch>> getBranches();

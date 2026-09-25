@@ -1,5 +1,5 @@
-import 'package:goluto_business/src/imports/core_imports.dart';
-import 'package:goluto_business/src/imports/packages_imports.dart';
+import 'package:aajhee_business/src/imports/core_imports.dart';
+import 'package:aajhee_business/src/imports/packages_imports.dart';
 
 /// Responsive shell for auth screens — split layout on desktop, centered on mobile.
 class AuthPageLayout extends StatelessWidget {
@@ -94,7 +94,7 @@ class _BrandPanel extends StatelessWidget {
           Icon(Icons.storefront_outlined, size: 48.sp, color: cs.onPrimary),
           SizedBox(height: AppSpacing.xl.h),
           Text(
-            'GoLuto Business',
+            'Aajhee Business',
             style: tt.headlineLarge?.copyWith(
               color: cs.onPrimary,
               fontWeight: FontWeight.bold,

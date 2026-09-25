@@ -1,5 +1,5 @@
-import 'package:goluto_business/src/features/auth/domain/entities/user.dart';
-import 'package:goluto_business/src/utils/utils.dart';
+import 'package:aajhee_business/src/features/auth/domain/entities/user.dart';
+import 'package:aajhee_business/src/utils/utils.dart';
 
 abstract class AuthRepository {
   Stream<AppUser?> get onAuthStateChanged;

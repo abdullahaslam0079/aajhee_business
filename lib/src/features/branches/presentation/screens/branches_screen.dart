@@ -1,8 +1,8 @@
-import 'package:goluto_business/src/features/business/domain/entities/branch.dart';
-import 'package:goluto_business/src/features/business/presentation/providers/business_providers.dart';
-import 'package:goluto_business/src/imports/core_imports.dart';
-import 'package:goluto_business/src/imports/packages_imports.dart';
-import 'package:goluto_business/src/routing/app_routes.dart';
+import 'package:aajhee_business/src/features/business/domain/entities/branch.dart';
+import 'package:aajhee_business/src/features/business/presentation/providers/business_providers.dart';
+import 'package:aajhee_business/src/imports/core_imports.dart';
+import 'package:aajhee_business/src/imports/packages_imports.dart';
+import 'package:aajhee_business/src/routing/app_routes.dart';
 
 class BranchesScreen extends ConsumerWidget {
   const BranchesScreen({super.key});
@@ -113,6 +113,12 @@ class _BranchCard extends ConsumerWidget {
                 ),
               ],
             ),
+          ),
+          IconButton(
+            tooltip: 'Delivery & contact',
+            onPressed: () =>
+                context.push(AppRoutes.branchFulfillment(branch.id)),
+            icon: const Icon(Icons.local_shipping_outlined),
           ),
           Icon(Icons.chevron_right, color: cs.onSurfaceVariant),
         ],

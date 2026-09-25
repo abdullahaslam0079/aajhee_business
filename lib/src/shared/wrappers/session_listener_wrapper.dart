@@ -1,7 +1,7 @@
-import 'package:goluto_business/src/imports/core_imports.dart';
-import 'package:goluto_business/src/imports/packages_imports.dart';
+import 'package:aajhee_business/src/imports/core_imports.dart';
+import 'package:aajhee_business/src/imports/packages_imports.dart';
 
-import 'package:goluto_business/src/features/auth/presentation/providers/session_provider.dart';
+import 'package:aajhee_business/src/features/auth/presentation/providers/session_provider.dart';
 
 
 class SessionListenerWrapper extends ConsumerWidget {

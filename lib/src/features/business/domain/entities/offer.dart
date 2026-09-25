@@ -1,9 +1,9 @@
 import 'package:equatable/equatable.dart';
-import 'package:goluto_business/src/features/business/domain/entities/offer_branch_stat.dart';
-import 'package:goluto_business/src/features/business/domain/enums/offer_branch_scope.dart';
-import 'package:goluto_business/src/features/business/domain/enums/offer_display_status.dart';
-import 'package:goluto_business/src/features/business/domain/enums/offer_type.dart';
-import 'package:goluto_business/src/features/business/domain/enums/usage_limit_type.dart';
+import 'package:aajhee_business/src/features/business/domain/entities/offer_branch_stat.dart';
+import 'package:aajhee_business/src/features/business/domain/enums/offer_branch_scope.dart';
+import 'package:aajhee_business/src/features/business/domain/enums/offer_display_status.dart';
+import 'package:aajhee_business/src/features/business/domain/enums/offer_type.dart';
+import 'package:aajhee_business/src/features/business/domain/enums/usage_limit_type.dart';
 
 class Offer extends Equatable {
   const Offer({

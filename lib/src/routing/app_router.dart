@@ -1,18 +1,22 @@
 import 'package:flutter/foundation.dart';
 import 'package:go_router/go_router.dart';
-import 'package:goluto_business/src/features/auth/presentation/providers/session_provider.dart';
-import 'package:goluto_business/src/features/auth/presentation/screens/business_login_screen.dart';
-import 'package:goluto_business/src/features/auth/presentation/screens/business_register_screen.dart';
-import 'package:goluto_business/src/features/branches/presentation/screens/branch_form_screen.dart';
-import 'package:goluto_business/src/features/branches/presentation/screens/branches_screen.dart';
-import 'package:goluto_business/src/features/dashboard/presentation/screens/dashboard_screen.dart';
-import 'package:goluto_business/src/features/splash/presentation/splash_screen.dart';
-import 'package:goluto_business/src/features/offers/presentation/screens/offer_detail_screen.dart';
-import 'package:goluto_business/src/features/offers/presentation/screens/offer_form_screen.dart';
-import 'package:goluto_business/src/features/offers/presentation/screens/offers_screen.dart';
-import 'package:goluto_business/src/imports/packages_imports.dart';
-import 'package:goluto_business/src/routing/app_routes.dart';
-import 'package:goluto_business/src/routing/global_navigator.dart';
+import 'package:aajhee_business/src/features/auth/presentation/providers/session_provider.dart';
+import 'package:aajhee_business/src/features/auth/presentation/screens/business_login_screen.dart';
+import 'package:aajhee_business/src/features/auth/presentation/screens/business_register_screen.dart';
+import 'package:aajhee_business/src/features/branches/presentation/screens/branch_form_screen.dart';
+import 'package:aajhee_business/src/features/branches/presentation/screens/branch_fulfillment_screen.dart';
+import 'package:aajhee_business/src/features/branches/presentation/screens/branches_screen.dart';
+import 'package:aajhee_business/src/features/dashboard/presentation/screens/dashboard_screen.dart';
+import 'package:aajhee_business/src/features/items/presentation/screens/orders_screen.dart';
+import 'package:aajhee_business/src/features/items/presentation/screens/product_form_screen.dart';
+import 'package:aajhee_business/src/features/items/presentation/screens/products_screen.dart';
+import 'package:aajhee_business/src/features/splash/presentation/splash_screen.dart';
+import 'package:aajhee_business/src/features/offers/presentation/screens/offer_detail_screen.dart';
+import 'package:aajhee_business/src/features/offers/presentation/screens/offer_form_screen.dart';
+import 'package:aajhee_business/src/features/offers/presentation/screens/offers_screen.dart';
+import 'package:aajhee_business/src/imports/packages_imports.dart';
+import 'package:aajhee_business/src/routing/app_routes.dart';
+import 'package:aajhee_business/src/routing/global_navigator.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'app_router.g.dart';
@@ -91,6 +95,49 @@ GoRouter appRouter(Ref ref) {
             builder: (context, state) {
               final id = state.pathParameters['id']!;
               return BranchFormScreen(branchId: id);
+            },
+          ),
+          GoRoute(
+            path: ':id/fulfillment',
+            name: 'branchFulfillment',
+            builder: (context, state) {
+              final id = state.pathParameters['id']!;
+              return BranchFulfillmentScreen(branchId: id);
+            },
+          ),
+        ],
+      ),
+      GoRoute(
+        path: AppRoutes.products,
+        name: 'products',
+        builder: (context, state) => const ProductsScreen(),
+        routes: [
+          GoRoute(
+            path: 'create',
+            name: 'productCreate',
+            builder: (context, state) => const ProductFormScreen(),
+          ),
+          GoRoute(
+            path: ':id/edit',
+            name: 'productEdit',
+            builder: (context, state) {
+              final id = state.pathParameters['id']!;
+              return ProductFormScreen(productId: id);
+            },
+          ),
+        ],
+      ),
+      GoRoute(
+        path: AppRoutes.orders,
+        name: 'orders',
+        builder: (context, state) => const OrdersScreen(),
+        routes: [
+          GoRoute(
+            path: ':publicId',
+            name: 'orderDetail',
+            builder: (context, state) {
+              final id = state.pathParameters['publicId']!;
+              return OrderDetailScreen(publicId: id);
             },
           ),
         ],

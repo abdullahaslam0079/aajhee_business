@@ -1,9 +1,9 @@
-import 'package:goluto_business/src/features/business/data/repositories/business_api_repository.dart';
-import 'package:goluto_business/src/features/business/domain/entities/branch.dart';
-import 'package:goluto_business/src/features/business/domain/entities/dashboard_stats.dart';
-import 'package:goluto_business/src/features/business/domain/entities/offer.dart';
-import 'package:goluto_business/src/features/business/domain/repositories/business_repository.dart';
-import 'package:goluto_business/src/services/dio_service.dart';
+import 'package:aajhee_business/src/features/business/data/repositories/business_api_repository.dart';
+import 'package:aajhee_business/src/features/business/domain/entities/branch.dart';
+import 'package:aajhee_business/src/features/business/domain/entities/dashboard_stats.dart';
+import 'package:aajhee_business/src/features/business/domain/entities/offer.dart';
+import 'package:aajhee_business/src/features/business/domain/repositories/business_repository.dart';
+import 'package:aajhee_business/src/services/dio_service.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'business_providers.g.dart';

@@ -4,7 +4,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-/// Renders GoLuto Business brand assets using bundled Inter 800.
+/// Renders Aajhee Business brand assets using bundled Inter 800.
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -16,7 +16,7 @@ Future<void> main() async {
   const white = Color(0xFFFFFFFF);
 
   await _renderStackedWordmark(
-    outputPath: 'assets/images/goluto_business_logo.png',
+    outputPath: 'assets/images/aajhee_business_logo.png',
     topText: 'Go',
     bottomText: 'Business',
     topFontSize: 280,

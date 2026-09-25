@@ -1,5 +1,5 @@
-import 'package:goluto_business/src/imports/core_imports.dart';
-import 'package:goluto_business/src/imports/packages_imports.dart';
+import 'package:aajhee_business/src/imports/core_imports.dart';
+import 'package:aajhee_business/src/imports/packages_imports.dart';
 
 class App extends ConsumerWidget {
   const App({super.key});
@@ -16,7 +16,7 @@ class App extends ConsumerWidget {
 
   Widget _buildMaterialApp(BuildContext context, GoRouter router) {
     return MaterialApp.router(
-      title: 'GoLuto Business',
+      title: 'Aajhee Business',
       debugShowCheckedModeBanner: false,
       theme: buildLightTheme(primaryColorHex: '#1F1F21'),
       darkTheme: buildDarkTheme(primaryColorHex: '#CFCFD4'),

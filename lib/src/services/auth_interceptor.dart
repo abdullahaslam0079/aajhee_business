@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:goluto_business/src/services/auth_token_service.dart';
+import 'package:aajhee_business/src/services/auth_token_service.dart';
 
 /// Attaches the stored JWT to outgoing API requests.
 class AuthInterceptor extends QueuedInterceptorsWrapper {

@@ -1,8 +1,8 @@
-import 'package:goluto_business/src/imports/core_imports.dart';
-import 'package:goluto_business/src/imports/packages_imports.dart';
+import 'package:aajhee_business/src/imports/core_imports.dart';
+import 'package:aajhee_business/src/imports/packages_imports.dart';
 
-import 'package:goluto_business/src/features/auth/domain/entities/user.dart';
-import 'package:goluto_business/src/features/auth/domain/repositories/auth_repository.dart';
+import 'package:aajhee_business/src/features/auth/domain/entities/user.dart';
+import 'package:aajhee_business/src/features/auth/domain/repositories/auth_repository.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
   final AuthService _authService = AuthService.instance;

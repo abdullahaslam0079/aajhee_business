@@ -1,10 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:goluto_business/src/features/auth/presentation/providers/session_provider.dart';
-import 'package:goluto_business/src/features/splash/presentation/widgets/goluto_business_splash_logo.dart';
-import 'package:goluto_business/src/imports/packages_imports.dart';
-import 'package:goluto_business/src/routing/app_navigation.dart';
+import 'package:aajhee_business/src/features/auth/presentation/providers/session_provider.dart';
+import 'package:aajhee_business/src/features/splash/presentation/widgets/aajhee_business_splash_logo.dart';
+import 'package:aajhee_business/src/imports/packages_imports.dart';
+import 'package:aajhee_business/src/routing/app_navigation.dart';
 
 /// Animated splash: "Go" lands first, then "Business" appears underneath.
 class SplashScreen extends ConsumerStatefulWidget {
@@ -63,7 +63,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     return Scaffold(
       backgroundColor: colorScheme.onPrimary,
       body: const Center(
-        child: GolutoBusinessSplashLogo(),
+        child: AajheeBusinessSplashLogo(),
       ),
     );
   }

@@ -1,7 +1,7 @@
-import 'package:goluto_business/src/features/business/domain/entities/offer.dart';
-import 'package:goluto_business/src/features/business/domain/enums/offer_type.dart';
-import 'package:goluto_business/src/features/business/domain/enums/usage_limit_type.dart';
-import 'package:goluto_business/src/imports/core_imports.dart';
+import 'package:aajhee_business/src/features/business/domain/entities/offer.dart';
+import 'package:aajhee_business/src/features/business/domain/enums/offer_type.dart';
+import 'package:aajhee_business/src/features/business/domain/enums/usage_limit_type.dart';
+import 'package:aajhee_business/src/imports/core_imports.dart';
 
 class OfferDisplayHelper {
   OfferDisplayHelper._();

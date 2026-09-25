@@ -1,10 +1,10 @@
-import 'package:goluto_business/src/features/business/domain/entities/branch.dart';
-import 'package:goluto_business/src/features/business/domain/entities/dashboard_stats.dart';
-import 'package:goluto_business/src/features/business/domain/entities/offer.dart';
-import 'package:goluto_business/src/features/business/domain/entities/offer_branch_stat.dart';
-import 'package:goluto_business/src/features/business/domain/enums/offer_branch_scope.dart';
-import 'package:goluto_business/src/features/business/domain/enums/offer_type.dart';
-import 'package:goluto_business/src/features/business/domain/enums/usage_limit_type.dart';
+import 'package:aajhee_business/src/features/business/domain/entities/branch.dart';
+import 'package:aajhee_business/src/features/business/domain/entities/dashboard_stats.dart';
+import 'package:aajhee_business/src/features/business/domain/entities/offer.dart';
+import 'package:aajhee_business/src/features/business/domain/entities/offer_branch_stat.dart';
+import 'package:aajhee_business/src/features/business/domain/enums/offer_branch_scope.dart';
+import 'package:aajhee_business/src/features/business/domain/enums/offer_type.dart';
+import 'package:aajhee_business/src/features/business/domain/enums/usage_limit_type.dart';
 
 class BusinessApiMappers {
   BusinessApiMappers._();

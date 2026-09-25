@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:dio/dio.dart';
 import 'package:fpdart/fpdart.dart';
-import 'package:goluto_business/src/config/app_config.dart';
-import 'package:goluto_business/src/services/auth_token_service.dart';
-import 'package:goluto_business/src/utils/utils.dart';
+import 'package:aajhee_business/src/config/app_config.dart';
+import 'package:aajhee_business/src/services/auth_token_service.dart';
+import 'package:aajhee_business/src/utils/utils.dart';
 
 class AuthService {
   AuthService._();

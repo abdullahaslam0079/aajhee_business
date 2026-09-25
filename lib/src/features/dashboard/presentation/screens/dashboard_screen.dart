@@ -1,8 +1,8 @@
-import 'package:goluto_business/src/features/auth/presentation/providers/session_provider.dart';
-import 'package:goluto_business/src/features/business/domain/entities/dashboard_stats.dart';
-import 'package:goluto_business/src/features/business/presentation/providers/business_providers.dart';
-import 'package:goluto_business/src/imports/core_imports.dart';
-import 'package:goluto_business/src/imports/packages_imports.dart';
+import 'package:aajhee_business/src/features/auth/presentation/providers/session_provider.dart';
+import 'package:aajhee_business/src/features/business/domain/entities/dashboard_stats.dart';
+import 'package:aajhee_business/src/features/business/presentation/providers/business_providers.dart';
+import 'package:aajhee_business/src/imports/core_imports.dart';
+import 'package:aajhee_business/src/imports/packages_imports.dart';
 
 class DashboardScreen extends ConsumerWidget {
   const DashboardScreen({super.key});
@@ -114,6 +114,18 @@ class DashboardScreen extends ConsumerWidget {
                         label: 'dashboard.stores'.tr(),
                         subtitle: 'dashboard.stores_subtitle'.tr(),
                         onTap: () => context.push(AppRoutes.branches),
+                      ),
+                      _DashboardCard(
+                        icon: Icons.inventory_2_outlined,
+                        label: 'Products',
+                        subtitle: 'Catalog, prices & discounts',
+                        onTap: () => context.push(AppRoutes.products),
+                      ),
+                      _DashboardCard(
+                        icon: Icons.receipt_long_outlined,
+                        label: 'Orders',
+                        subtitle: 'Accept, fulfill & payments',
+                        onTap: () => context.push(AppRoutes.orders),
                       ),
                       _DashboardCard(
                         icon: Icons.local_offer_outlined,

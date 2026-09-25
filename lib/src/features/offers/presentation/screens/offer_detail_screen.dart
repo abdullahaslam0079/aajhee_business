@@ -1,12 +1,12 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import 'package:goluto_business/src/features/business/domain/enums/offer_display_status.dart';
-import 'package:goluto_business/src/features/business/domain/enums/offer_type.dart';
-import 'package:goluto_business/src/features/business/presentation/providers/business_providers.dart';
-import 'package:goluto_business/src/features/offers/presentation/helpers/offer_display_helper.dart';
-import 'package:goluto_business/src/features/offers/presentation/widgets/offer_qr_poster_card.dart';
-import 'package:goluto_business/src/imports/core_imports.dart';
+import 'package:aajhee_business/src/features/business/domain/enums/offer_display_status.dart';
+import 'package:aajhee_business/src/features/business/domain/enums/offer_type.dart';
+import 'package:aajhee_business/src/features/business/presentation/providers/business_providers.dart';
+import 'package:aajhee_business/src/features/offers/presentation/helpers/offer_display_helper.dart';
+import 'package:aajhee_business/src/features/offers/presentation/widgets/offer_qr_poster_card.dart';
+import 'package:aajhee_business/src/imports/core_imports.dart';
 
 class OfferDetailScreen extends ConsumerWidget {
   const OfferDetailScreen({super.key, required this.offerId});

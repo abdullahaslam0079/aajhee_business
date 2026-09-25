@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:goluto_business/src/imports/packages_imports.dart';
-import 'package:goluto_business/src/theme/app_fonts.dart';
+import 'package:aajhee_business/src/imports/packages_imports.dart';
+import 'package:aajhee_business/src/theme/app_fonts.dart';
 
 /// Business wordmark: "Go" lands first, brief pause, then "Business" flows in below.
-class GolutoBusinessSplashLogo extends StatefulWidget {
-  const GolutoBusinessSplashLogo({super.key});
+class AajheeBusinessSplashLogo extends StatefulWidget {
+  const AajheeBusinessSplashLogo({super.key});
 
   static const duration = Duration(milliseconds: 2500);
 
   @override
-  State<GolutoBusinessSplashLogo> createState() =>
-      _GolutoBusinessSplashLogoState();
+  State<AajheeBusinessSplashLogo> createState() =>
+      _AajheeBusinessSplashLogoState();
 }
 
-class _GolutoBusinessSplashLogoState extends State<GolutoBusinessSplashLogo>
+class _AajheeBusinessSplashLogoState extends State<AajheeBusinessSplashLogo>
     with SingleTickerProviderStateMixin {
   static const _goLetters = ['G', 'o'];
   static const _businessLetters = [
@@ -45,7 +45,7 @@ class _GolutoBusinessSplashLogoState extends State<GolutoBusinessSplashLogo>
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: GolutoBusinessSplashLogo.duration,
+      duration: AajheeBusinessSplashLogo.duration,
     )..forward();
   }
 

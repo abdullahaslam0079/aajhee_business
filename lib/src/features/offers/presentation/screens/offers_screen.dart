@@ -1,10 +1,10 @@
-import 'package:goluto_business/src/features/business/domain/entities/offer.dart';
-import 'package:goluto_business/src/features/business/domain/enums/offer_display_status.dart';
-import 'package:goluto_business/src/features/business/presentation/providers/business_providers.dart';
-import 'package:goluto_business/src/features/offers/presentation/helpers/offer_display_helper.dart';
-import 'package:goluto_business/src/imports/core_imports.dart';
-import 'package:goluto_business/src/imports/packages_imports.dart';
-import 'package:goluto_business/src/routing/app_routes.dart';
+import 'package:aajhee_business/src/features/business/domain/entities/offer.dart';
+import 'package:aajhee_business/src/features/business/domain/enums/offer_display_status.dart';
+import 'package:aajhee_business/src/features/business/presentation/providers/business_providers.dart';
+import 'package:aajhee_business/src/features/offers/presentation/helpers/offer_display_helper.dart';
+import 'package:aajhee_business/src/imports/core_imports.dart';
+import 'package:aajhee_business/src/imports/packages_imports.dart';
+import 'package:aajhee_business/src/routing/app_routes.dart';
 
 class OffersScreen extends ConsumerWidget {
   const OffersScreen({super.key});

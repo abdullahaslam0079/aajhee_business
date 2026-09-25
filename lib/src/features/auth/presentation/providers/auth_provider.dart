@@ -1,8 +1,8 @@
-import 'package:goluto_business/src/features/auth/data/repositories/auth_repository_impl.dart';
-import 'package:goluto_business/src/features/auth/domain/repositories/auth_repository.dart';
-import 'package:goluto_business/src/imports/core_imports.dart';
-import 'package:goluto_business/src/imports/packages_imports.dart';
-import 'package:goluto_business/src/routing/app_navigation.dart';
+import 'package:aajhee_business/src/features/auth/data/repositories/auth_repository_impl.dart';
+import 'package:aajhee_business/src/features/auth/domain/repositories/auth_repository.dart';
+import 'package:aajhee_business/src/imports/core_imports.dart';
+import 'package:aajhee_business/src/imports/packages_imports.dart';
+import 'package:aajhee_business/src/routing/app_navigation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'auth_provider.g.dart';

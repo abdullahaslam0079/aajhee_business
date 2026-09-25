@@ -1,13 +1,13 @@
 import 'package:dio/dio.dart';
-import 'package:goluto_business/src/features/business/data/mappers/business_api_mappers.dart';
-import 'package:goluto_business/src/features/business/domain/entities/branch.dart';
-import 'package:goluto_business/src/features/business/domain/entities/dashboard_stats.dart';
-import 'package:goluto_business/src/features/business/domain/entities/offer.dart';
-import 'package:goluto_business/src/features/business/domain/enums/offer_branch_scope.dart';
-import 'package:goluto_business/src/features/business/domain/repositories/business_repository.dart';
-import 'package:goluto_business/src/services/dio_service.dart';
-import 'package:goluto_business/src/utils/failure.dart';
-import 'package:goluto_business/src/utils/typedefs.dart';
+import 'package:aajhee_business/src/features/business/data/mappers/business_api_mappers.dart';
+import 'package:aajhee_business/src/features/business/domain/entities/branch.dart';
+import 'package:aajhee_business/src/features/business/domain/entities/dashboard_stats.dart';
+import 'package:aajhee_business/src/features/business/domain/entities/offer.dart';
+import 'package:aajhee_business/src/features/business/domain/enums/offer_branch_scope.dart';
+import 'package:aajhee_business/src/features/business/domain/repositories/business_repository.dart';
+import 'package:aajhee_business/src/services/dio_service.dart';
+import 'package:aajhee_business/src/utils/failure.dart';
+import 'package:aajhee_business/src/utils/typedefs.dart';
 import 'package:fpdart/fpdart.dart';
 
 class BusinessApiRepository implements BusinessRepository {

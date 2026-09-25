@@ -1,9 +1,9 @@
-import 'package:goluto_business/src/features/business/domain/entities/branch.dart';
-import 'package:goluto_business/src/features/business/domain/entities/offer.dart';
-import 'package:goluto_business/src/features/business/utils/offer_qr_codec.dart';
-import 'package:goluto_business/src/features/offers/presentation/helpers/offer_display_helper.dart';
-import 'package:goluto_business/src/imports/core_imports.dart';
-import 'package:goluto_business/src/imports/packages_imports.dart';
+import 'package:aajhee_business/src/features/business/domain/entities/branch.dart';
+import 'package:aajhee_business/src/features/business/domain/entities/offer.dart';
+import 'package:aajhee_business/src/features/business/utils/offer_qr_codec.dart';
+import 'package:aajhee_business/src/features/offers/presentation/helpers/offer_display_helper.dart';
+import 'package:aajhee_business/src/imports/core_imports.dart';
+import 'package:aajhee_business/src/imports/packages_imports.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 class OfferQrPosterCard extends StatefulWidget {
